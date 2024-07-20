@@ -1,9 +1,9 @@
 from flask import request, jsonify, session, current_app as app
-from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating, WatchedMovie
+from app.models import db, User, Movie, TVShow, Club, Post, Comment, \
+      Rating, WatchedMovie
 from functools import wraps
 import requests
 import logging
-from datetime import datetime
 
 # Error logging configuration
 logging.basicConfig(level=logging.ERROR)
