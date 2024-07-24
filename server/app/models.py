@@ -1,6 +1,7 @@
-from app import db
-# from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import db
+# db = SQLAlchemy()
 
 user_clubs = db.Table('user_clubs',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
