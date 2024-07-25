@@ -1,21 +1,28 @@
 import React from 'react';
-import { Card, Heading, Text } from 'evergreen-ui';
-import { Link } from 'react-router-dom';
-import { IMAGE_URL_W300 } from '../constants';
+import { Card, CardContent, Typography, CardMedia, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 const MovieCard = ({ movie }) => {
+  const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/path/to/default/image.jpg'; // Default image if no poster
+
   return (
-    <Card elevation={1} padding={20} marginBottom={20}>
-      <Link to={`/movie/${movie.id}`}>
-        <img
-          src={`${IMAGE_URL_W300}${movie.poster_path}`}
-          alt={movie.title}
-          className="movie-poster"
-          style={{ width: '60%', maxHeight: '300px', objectFit: 'cover', borderRadius: '5px' }}
-        />
-        <Heading size={400}>{movie.title}</Heading>
-        <Text size={300} color="#666">{movie.overview}</Text>
-      </Link>
+    <Card>
+      <CardMedia
+        component="img"
+        alt={movie.title}
+        height="300"
+        image={posterUrl}
+      />
+      <CardContent>
+        <Link component={RouterLink} to={`/movie/${movie.id}`} color="inherit" underline="none">
+          <Typography variant="h5" gutterBottom>
+            {movie.title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {movie.overview}
+          </Typography>
+        </Link>
+      </CardContent>
     </Card>
   );
 };

@@ -21,8 +21,11 @@ const TVShowDetails = () => {
     return <Alert severity="error">{error}</Alert>;
   }
 
+  const posterUrl = tvShow.poster_path ? `https://image.tmdb.org/t/p/w500${tvShow.poster_path}` : '/path/to/default/image.jpg'; // Default image if no poster
+
   return (
     <Box padding={2}>
+      <img src={posterUrl} alt={tvShow.name} height="400" />
       <Typography variant="h4" gutterBottom>{tvShow.name}</Typography>
       <Typography variant="body1">{tvShow.overview}</Typography>
       <Typography variant="body2">First Air Date: {tvShow.first_air_date}</Typography>

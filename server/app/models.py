@@ -29,11 +29,12 @@ class User(db.Model):
     clubs = db.relationship('Club', secondary=user_clubs, back_populates='members')
     watched_movies = db.relationship('WatchedMovie', back_populates='user')
     
-    followed = db.relationship(
+    followed_users = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic'
+    )
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -75,6 +76,7 @@ class Club(db.Model):
 
     created_by = db.relationship('User', backref='created_clubs')
     members = db.relationship('User', secondary=user_clubs, back_populates='clubs')
+    followers = db.relationship('User', secondary=followers, back_populates='followed_users')
     posts = db.relationship('Post', back_populates='club', lazy='dynamic')
 
 class Post(db.Model):
@@ -112,9 +114,12 @@ class Rating(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
 
-    author = db.relationship('User', back_populates='ratings')
+    user = db.relationship('User', back_populates='ratings')
     post = db.relationship('Post', back_populates='ratings')
+    club = db.relationship('Club', back_populates='ratings')
+
 
 class WatchedMovie(db.Model):
     __tablename__ = 'watched_movies'

@@ -34,8 +34,8 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/movies" element={<MovieList />} />
               <Route path="/movie/:id" element={<MovieDetails />} />
-              <Route path="/tv-shows" element={<TVShowList />} />
-              <Route path="/tv-show/:id" element={<TVShowDetails />} />
+              <Route path="/tvShows" element={<TVShowList />} />
+              <Route path="/tvShow/:id" element={<TVShowDetails />} />
               <Route path="/clubs" element={<ClubList />} />
               <Route path="/club/:id" element={<ClubDetails />} />
               <Route path="/create-club" element={<CreateClub />} />

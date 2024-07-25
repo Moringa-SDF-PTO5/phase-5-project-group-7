@@ -15,7 +15,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await dispatch(userLogin({ username, password }));
-      navigate('/'); // Redirect to home or dashboard
+      navigate('/clubs'); // Redirect to home or dashboard
     } catch (err) {
       setError('Invalid username or password');
     }

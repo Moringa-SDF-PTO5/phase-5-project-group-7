@@ -3,7 +3,7 @@ import { fetchTVShows, fetchTVShowById } from '../../services/api';
 
 // Fetch all TV shows
 export const getTVShows = createAsyncThunk('tvShows/getTVShows', async () => {
-  const response = await api.get('/tvShows'); // Adjust the endpoint as necessary
+  const response = await fetchTVShows(); // Adjust the endpoint as necessary
   return response.data;
 });
 

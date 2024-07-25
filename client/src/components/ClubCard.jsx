@@ -11,10 +11,10 @@ const ClubCard = ({ club }) => {
             {club.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {club.genre}
+            Genre: {club.genre}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {club.description}
+            Description: {club.description}
           </Typography>
         </Link>
       </CardContent>

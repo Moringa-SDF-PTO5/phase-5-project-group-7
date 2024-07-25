@@ -215,6 +215,34 @@ def get_club_posts(club_id):
     return jsonify([{"id": post.id, "content": post.content,
                       "user_id": post.user_id} for post in posts]), 200
 
+@app.route('/club/<int:club_id>/follow', methods=['POST'])
+@login_required
+def follow_club(club_id):
+    """Follow a specific club."""
+    club = Club.query.get(club_id)
+    if club:
+        user = User.query.get(session['user_id'])
+        if club not in user.clubs:
+            user.clubs.append(club)
+            db.session.commit()
+            return jsonify({"msg": "Successfully followed the club."}), 200
+        return jsonify({"msg": "You are already a member of this club."}), 400
+    return jsonify({"msg": "Club not found."}), 404
+
+@app.route('/club/<int:club_id>/unfollow', methods=['POST'])
+@login_required
+def unfollow_club(club_id):
+    """Unfollow a specific club."""
+    club = Club.query.get(club_id)
+    if club:
+        user = User.query.get(session['user_id'])
+        if club in user.clubs:
+            user.clubs.remove(club)
+            db.session.commit()
+            return jsonify({"msg": "Successfully unfollowed the club."}), 200
+        return jsonify({"msg": "You are not a member of this club."}), 400
+    return jsonify({"msg": "Club not found."}), 404
+
 @app.route('/post', methods=['POST'])
 @login_required
 def create_post():
@@ -264,6 +292,31 @@ def rate_post(post_id):
     db.session.add(new_rating)
     db.session.commit()
     return jsonify({"msg": "Rating added successfully"}), 201
+
+@app.route('/rate/club/<int:club_id>', methods=['POST'])
+@login_required
+def rate_club(club_id):
+    """Rate a specific club."""
+    data = request.json
+    rating = Rating(score=data['score'], user_id=session['user_id'], club_id=club_id)
+    db.session.add(rating)
+    db.session.commit()
+    return jsonify({"msg": "Rating added successfully."}), 201
+
+@app.route('/profile/settings', methods=['PUT'])
+@login_required
+def update_profile():
+    """Update user profile settings."""
+    data = request.json
+    user = User.query.get(session['user_id'])
+    if user:
+        user.username = data.get('username', user.username)
+        user.email = data.get('email', user.email)
+        user.bio = data.get('bio', user.bio)
+        user.profile_pic = data.get('profile_pic', user.profile_pic)
+        db.session.commit()
+        return jsonify({"msg": "Profile updated successfully."}), 200
+    return jsonify({"msg": "User not found."}), 404
 
 @app.route('/search', methods=['GET'])
 def search():
