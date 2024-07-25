@@ -14,8 +14,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(userLogin({ username, password }));
-      navigate('/clubs'); // Redirect to home or dashboard
+      const response = await dispatch(userLogin({ username, password }));
+      if (response.meta.requestStatus === 'fulfilled') {
+        // Store user info in local storage
+        localStorage.setItem('user', JSON.stringify(response.payload));
+        navigate('/clubs'); // Redirect to clubs page
+      }
     } catch (err) {
       setError('Invalid username or password');
     }

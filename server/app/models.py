@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
-# db = SQLAlchemy()
 
 user_clubs = db.Table('user_clubs',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
@@ -9,8 +8,8 @@ user_clubs = db.Table('user_clubs',
 )
 
 followers = db.Table('followers',
-    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
 )
 
 class User(db.Model):
@@ -76,8 +75,14 @@ class Club(db.Model):
 
     created_by = db.relationship('User', backref='created_clubs')
     members = db.relationship('User', secondary=user_clubs, back_populates='clubs')
-    followers = db.relationship('User', secondary=followers, back_populates='followed_users')
+    followers = db.relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.followed_id == id),
+        secondaryjoin=(followers.c.follower_id == id),
+        backref=db.backref('followed_clubs', lazy='dynamic'), lazy='dynamic'
+    )
     posts = db.relationship('Post', back_populates='club', lazy='dynamic')
+    ratings = db.relationship('Rating', back_populates='club', lazy='dynamic')
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -113,13 +118,12 @@ class Rating(db.Model):
     score = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=True)
     club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
 
-    user = db.relationship('User', back_populates='ratings')
+    author = db.relationship('User', back_populates='ratings')
     post = db.relationship('Post', back_populates='ratings')
     club = db.relationship('Club', back_populates='ratings')
-
 
 class WatchedMovie(db.Model):
     __tablename__ = 'watched_movies'
