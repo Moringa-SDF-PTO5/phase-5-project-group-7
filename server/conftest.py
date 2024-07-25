@@ -1,5 +1,5 @@
 import pytest
-from app import app
+from server.run import app
 
 @pytest.fixture
 def client():
