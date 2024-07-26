@@ -47,3 +47,99 @@ def logout():
     session.pop('user_id', None)
     session.pop('username', None)
     return jsonify({"msg": "Logged out successfully"}), 200
+
+@app.route('/clubs', methods=['GET'])
+def get_clubs():
+    """Fetch all clubs."""
+    try:
+        clubs = Club.query.all()
+        return jsonify([{"id": club.id, "name": club.name, "genre": club.genre} for club in clubs]), 200
+    except Exception as e:
+        logging.error(f"Error fetching clubs: {e}")
+        return jsonify({"error": "Failed to fetch clubs"}), 500
+
+@app.route('/clubs', methods=['POST'])
+@login_required
+def create_club():
+    """Create a new club."""
+    data = request.json
+    new_club = Club(
+        name=data['name'],
+        description=data['description'],
+        genre=data['genre'],
+        created_by_id=session['user_id']
+    )
+    db.session.add(new_club)
+    db.session.commit()
+    return jsonify({"msg": "Club created successfully"}), 201
+
+@app.route('/club/<int:club_id>', methods=['GET'])
+def get_club(club_id):
+    """Fetch details of a specific club."""
+    club = Club.query.get(club_id)
+    if club:
+        return jsonify({
+            "id": club.id,
+            "name": club.name,
+            "description": club.description,
+            "genre": club.genre
+        }), 200
+    return jsonify({"msg": "Club not found"}), 404
+
+@app.route('/club/<int:club_id>/join', methods=['POST'])
+@login_required
+def join_club(club_id):
+    """Join a specified club."""
+    user = User.query.get(session['user_id'])
+    club = Club.query.get(club_id)
+    if club not in user.clubs:
+        user.clubs.append(club)
+        db.session.commit()
+        return jsonify({"msg": "Joined club successfully"}), 200
+    return jsonify({"msg": "Already a member of this club"}), 400
+
+@app.route('/club/<int:club_id>/posts', methods=['GET'])
+def get_club_posts(club_id):
+    """Fetch all posts for a specific club."""
+    posts = Post.query.filter_by(club_id=club_id).all()
+    return jsonify([{"id": post.id, "content": post.content,
+                      "user_id": post.user_id} for post in posts]), 200
+
+@app.route('/club/<int:club_id>/followers', methods=['GET'])
+def get_club_followers(club_id):
+    """Fetch followers of a specific club."""
+    try:
+        club = Club.query.get(club_id)
+        if club:
+            followers = [user.username for user in club.followers]
+            return jsonify(followers), 200
+        return jsonify({"msg": "Club not found"}), 404
+    except Exception as e:
+        logging.error(f"Error fetching followers for club {club_id}: {e}")
+        return jsonify({"error": "Failed to fetch followers"}), 500
+
+@app.route('/club/<int:club_id>/unfollow', methods=['POST'])
+@login_required
+def unfollow_club(club_id):
+    """Unfollow a specific club."""
+    club = Club.query.get(club_id)
+    if club:
+        user = User.query.get(session['user_id'])
+        if club in user.followed_users:
+            user.followed_users.remove(club)
+            db.session.commit()
+            return jsonify({"msg": "Successfully unfollowed the club."}), 200
+        return jsonify({"msg": "You are not following this club."}), 400
+    return jsonify({"msg": "Club not found."}), 404
+
+@app.route('/rate/club/<int:club_id>', methods=['POST'])
+@login_required
+def rate_club(club_id):
+    """Rate a specific club."""
+    data = request.json
+    rating = Rating(score=data['score'], 
+                    user_id=session['user_id'], club_id=club_id)
+                    
+    db.session.add(rating)
+    db.session.commit()
+    return jsonify({"msg": "Rating added successfully."}), 201
