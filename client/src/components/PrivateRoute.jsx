@@ -1,18 +1,17 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = useSelector((state) => state.auth.user !== null); // Adjust this based on your state
+  const location = useLocation();
 
-    return (
-        <Route
-            {...rest}
-            render={(props) =>
-                isLoggedIn ? <Component {...props} /> : <Redirect to="/login" />
-            }
-        />
-    );
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated
+    return <Navigate to="/login" state={{ from: location }} />;
+  }
+
+  return children;
 };
 
-export default ProtectedRoute;
+export default PrivateRoute;

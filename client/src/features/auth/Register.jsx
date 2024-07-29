@@ -1,32 +1,61 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import api from '../../services/api';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { register } from './authSlice';
 
 const Register = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate(); // Use useNavigate
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const history = useHistory();
+    const [error, setError] = useState('');
 
-    const handleRegister = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/register', { username, email, password });
-            alert(response.data.msg);
-            history.push('/login'); // Redirect to login after registration
-        } catch (error) {
-            alert(error.response.data.msg);
+            await dispatch(register({ username, email, password })).unwrap();
+            navigate('/login'); // Use navigate instead of history.push
+        } catch (err) {
+            setError('Failed to register. Please check your details and try again.');
         }
     };
 
     return (
-        <form onSubmit={handleRegister}>
+        <div>
             <h2>Register</h2>
-            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            <button type="submit">Register</button>
-        </form>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Username:</label>
+                    <input 
+                        type="text" 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)} 
+                        required 
+                    />
+                </div>
+                <div>
+                    <label>Email:</label>
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input 
+                        type="password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        required 
+                    />
+                </div>
+                {error && <p>{error}</p>}
+                <button type="submit">Register</button>
+            </form>
+        </div>
     );
 };
 

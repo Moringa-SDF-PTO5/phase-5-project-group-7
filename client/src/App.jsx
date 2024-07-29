@@ -1,33 +1,71 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Discover from './pages/Discover';
-import Club from './pages/Club';
+import Club from './pages/Clubs';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
 import CreateClub from './features/clubs/CreateClub';
 import CreatePost from './features/posts/CreatePost';
-import ProtectedRoute from '/home/btsalwa/class/phase-5-project-group-7/client/src/components/PrivateRoute.jsx';
+import Clubs from './pages/Clubs';
+import ProtectedRoute from './components/PrivateRoute';
 
 function App() {
     return (
         <Router>
             <Header />
-            <Switch>
-                <Route exact path="/" component={Home} />
-                <Route path="/discover" component={Discover} />
-                <ProtectedRoute path="/club/:id" component={Club} />
-                <ProtectedRoute path="/profile" component={Profile} />
-                <Route path="/search" component={Search} />
-                <Route path="/login" component={Login} />
-                <Route path="/register" component={Register} />
-                <ProtectedRoute path="/create-club" component={CreateClub} />
-                <ProtectedRoute path="/create-post" component={CreatePost} />
-            </Switch>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/discover" element={<Discover />} />
+                
+                <Route
+                    path="/club/:id"
+                    element={
+                        <ProtectedRoute>
+                            <Club />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route path="/search" element={<Search />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route
+                    path="/create-club"
+                    element={
+                        <ProtectedRoute>
+                            <CreateClub />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/create-post"
+                    element={
+                        <ProtectedRoute>
+                            <CreatePost />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/clubs"
+                    element={
+                        <ProtectedRoute>
+                            <Clubs />
+                        </ProtectedRoute>
+                    }
+                />
+            </Routes>
             <Footer />
         </Router>
     );

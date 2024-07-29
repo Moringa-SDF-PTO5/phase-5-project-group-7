@@ -1,32 +1,50 @@
 import React, { useState } from 'react';
-import api from '../../services/api';
-import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { createClub } from './clubSlice';
 
 const CreateClub = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate(); // Use useNavigate instead of useHistory
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [genre, setGenre] = useState('');
-    const history = useHistory();
+    const [error, setError] = useState('');
 
-    const handleCreateClub = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/club', { name, description, genre });
-            alert(response.data.msg);
-            history.push('/clubs'); // Redirect to clubs page after creation
-        } catch (error) {
-            alert(error.response.data.msg);
+            await dispatch(createClub({ name, description })).unwrap();
+            navigate('/clubs'); // Navigate to the clubs page or any other page after successful club creation
+        } catch (err) {
+            setError('Failed to create club. Please check your details and try again.');
         }
     };
 
     return (
-        <form onSubmit={handleCreateClub}>
+        <div>
             <h2>Create Club</h2>
-            <input type="text" placeholder="Club Name" value={name} onChange={(e) => setName(e.target.value)} required />
-            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
-            <input type="text" placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} required />
-            <button type="submit">Create Club</button>
-        </form>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Name:</label>
+                    <input 
+                        type="text" 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
+                        required 
+                    />
+                </div>
+                <div>
+                    <label>Description:</label>
+                    <textarea 
+                        value={description} 
+                        onChange={(e) => setDescription(e.target.value)} 
+                        required 
+                    />
+                </div>
+                {error && <p>{error}</p>}
+                <button type="submit">Create Club</button>
+            </form>
+        </div>
     );
 };
 

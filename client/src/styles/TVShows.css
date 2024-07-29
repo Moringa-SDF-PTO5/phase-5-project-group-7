@@ -1,37 +1,36 @@
-.tv-show-list {
+.tv-shows {
     text-align: center;
     padding: 20px;
 }
 
-.tv-show-list h2 {
+.tv-shows h2 {
     margin-bottom: 20px;
 }
 
-.tv-show-list ul {
+.tv-shows ul {
     list-style-type: none;
     padding: 0;
 }
 
-.tv-show-list li {
+.tv-shows li {
     display: flex;
     justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 
-.tv-show-list li:last-child {
+.tv-shows li:last-child {
     border-bottom: none;
 }
 
-.tv-show-list .title {
+.tv-shows .title {
     font-weight: bold;
 }
 
-.tv-show-list .actions button {
+.tv-shows .actions button {
     background-color: #28a745;
 }
 
-.tv-show-list .actions button:hover {
+.tv-shows .actions button:hover {
     background-color: #218838;
 }
- 

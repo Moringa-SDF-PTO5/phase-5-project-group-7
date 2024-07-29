@@ -1,5 +1,5 @@
 import React from 'react';
-import './Footer.css'; // Import CSS for styling
+import '/home/btsalwa/class/phase-5-project-group-7/client/src/styles/Footer.css'; // Import CSS for styling
 
 const Footer = () => {
     return (

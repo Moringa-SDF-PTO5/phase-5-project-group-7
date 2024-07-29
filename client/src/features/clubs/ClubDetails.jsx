@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { fetchClubDetails } from './clubSlice';
 import PostList from '../posts/PostList';
 import CreatePost from '../posts/CreatePost';
-import './ClubDetail.css'; // Import CSS for styling
+import '/home/btsalwa/class/phase-5-project-group-7/client/src/styles/ClubDetail.css'; // Import CSS for styling
 
 const ClubDetail = () => {
     const { id } = useParams();

@@ -1,37 +1,36 @@
-.tv-show-list {
+.movies {
     text-align: center;
     padding: 20px;
 }
 
-.tv-show-list h2 {
+.movies h2 {
     margin-bottom: 20px;
 }
 
-.tv-show-list ul {
+.movies ul {
     list-style-type: none;
     padding: 0;
 }
 
-.tv-show-list li {
+.movies li {
     display: flex;
     justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid #ccc;
 }
 
-.tv-show-list li:last-child {
+.movies li:last-child {
     border-bottom: none;
 }
 
-.tv-show-list .title {
+.movies .title {
     font-weight: bold;
 }
 
-.tv-show-list .actions button {
+.movies .actions button {
     background-color: #28a745;
 }
 
-.tv-show-list .actions button:hover {
+.movies .actions button:hover {
     background-color: #218838;
 }
- 
