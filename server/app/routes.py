@@ -80,7 +80,6 @@ def discover_tv_shows():
         logging.error(f"Error fetching TV shows from TMDB API: {e}")
         return jsonify({"error": "Failed to fetch TV shows"}), 500
 
-
 @app.route('/find/<int:tmdb_id>', methods=['GET'])
 def find_by_id(tmdb_id):
     try:
