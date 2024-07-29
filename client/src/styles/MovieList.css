@@ -1,0 +1,36 @@
+.movie-list {
+    text-align: center;
+    padding: 20px;
+}
+
+.movie-list h2 {
+    margin-bottom: 20px;
+}
+
+.movie-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.movie-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.movie-list li:last-child {
+    border-bottom: none;
+}
+
+.movie-list .title {
+    font-weight: bold;
+}
+
+.movie-list .actions button {
+    background-color: #28a745;
+}
+
+.movie-list .actions button:hover {
+    background-color: #218838;
+}

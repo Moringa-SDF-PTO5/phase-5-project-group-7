@@ -1,16 +1,13 @@
 from flask import request, jsonify, session, current_app as app
-from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating
+from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating, WatchedMovie, WatchedTvShow, Notification, Follows
 from functools import wraps
 import requests
 import logging
-# from datetime import datetime
 
-# Error logging configuration
 logging.basicConfig(level=logging.ERROR)
 
 def get_tmdb_url(endpoint: str) -> str:
     return f"{app.config['TMDB_BASE_URL']}/{endpoint}"
-
 
 def login_required(f):
     @wraps(f)
@@ -35,15 +32,13 @@ def discover_movies():
         response = requests.get(endpoint, params=params)
         response.raise_for_status()
         data = response.json()
-        movies = [
-            {
-                "id": movie["id"],
-                "title": movie["title"],
-                "overview": movie["overview"],
-                "release_date": movie["release_date"],
-                "poster_path": movie["poster_path"]
-            } for movie in data.get("results", [])
-        ]
+        movies = [{
+            "id": movie["id"],
+            "title": movie["title"],
+            "overview": movie["overview"],
+            "release_date": movie["release_date"],
+            "poster_path": movie["poster_path"]
+        } for movie in data.get("results", [])]
         return jsonify(movies), 200
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching movies from TMDB API: {e}")
@@ -64,15 +59,13 @@ def discover_tv_shows():
         response = requests.get(endpoint, params=params)
         response.raise_for_status()
         data = response.json()
-        tv_shows = [
-            {
-                "id": show["id"],
-                "name": show["name"],
-                "overview": show["overview"],
-                "first_air_date": show["first_air_date"],
-                "poster_path": show["poster_path"]
-            } for show in data.get("results", [])
-        ]
+        tv_shows = [{
+            "id": show["id"],
+            "name": show["name"],
+            "overview": show["overview"],
+            "first_air_date": show["first_air_date"],
+            "poster_path": show["poster_path"]
+        } for show in data.get("results", [])]
         return jsonify(tv_shows), 200
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching TV shows from TMDB API: {e}")
@@ -90,25 +83,32 @@ def find_by_id(tmdb_id):
         response = requests.get(endpoint, params=params)
         response.raise_for_status()
         data = response.json()
-        if "movie_results" in data or "tv_results" in data:
-            result = {
-                "id": data["movie_results"][0]["id"] if data["movie_results"] else data["tv_results"][0]["id"],
-                "title": data["movie_results"][0]["title"] if data["movie_results"] else data["tv_results"][0]["name"],
-                "overview": data["movie_results"][0]["overview"] if data["movie_results"] else data["tv_results"][0]["overview"],
-                "release_date": data["movie_results"][0]["release_date"] if data["movie_results"] else data["tv_results"][0]["first_air_date"],
-                "poster_path": data["movie_results"][0]["poster_path"] if data["movie_results"] else data["tv_results"][0]["poster_path"]
-            }
-            return jsonify(result), 200
+        if "movie_results" in data and data["movie_results"]:
+            result = data["movie_results"][0]
+            return jsonify({
+                "id": result["id"],
+                "title": result["title"],
+                "overview": result["overview"],
+                "release_date": result["release_date"],
+                "poster_path": result["poster_path"]
+            }), 200
+        elif "tv_results" in data and data["tv_results"]:
+            result = data["tv_results"][0]
+            return jsonify({
+                "id": result["id"],
+                "name": result["name"],
+                "overview": result["overview"],
+                "first_air_date": result["first_air_date"],
+                "poster_path": result["poster_path"]
+            }), 200
         else:
-            logging.error(f"TMDB API response does not contain 'movie_results' or 'tv_results': {data}")
-            return jsonify({"error": "Failed to find item by ID"}), 500
+            return jsonify({"error": "No results found"}), 404
     except requests.exceptions.RequestException as e:
         logging.error(f"Error finding item by ID from TMDB API: {e}")
         return jsonify({"error": "Failed to find item by ID"}), 500
 
 @app.route('/register', methods=['POST'])
 def register():
-    """Register a new user."""
     data = request.json
     if User.query.filter_by(username=data['username']).first():
         return jsonify({"msg": "Username already exists"}), 400
@@ -122,7 +122,6 @@ def register():
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Log in an existing user."""
     data = request.json
     user = User.query.filter_by(username=data['username']).first()
     if user and user.check_password(data['password']):
@@ -131,32 +130,15 @@ def login():
         return jsonify({"msg": "Logged in successfully"}), 200
     return jsonify({"msg": "Invalid username or password"}), 401
 
-
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
-    """Log out the current user."""
     session.pop('user_id', None)
     session.pop('username', None)
     return jsonify({"msg": "Logged out successfully"}), 200
 
-@app.route('/movie/<int:tmdb_id>', methods=['GET'])
-def get_movie(tmdb_id):
-    movie = Movie.query.filter_by(tmdb_id=tmdb_id).first()
-    if movie:
-        return jsonify(id=movie.id, title=movie.title, overview=movie.overview), 200
-    return jsonify({"msg": "Movie not found"}), 404
-
-@app.route('/tv/<int:tmdb_id>', methods=['GET'])
-def get_tv_show(tmdb_id):
-    tv_show = TVShow.query.filter_by(tmdb_id=tmdb_id).first()
-    if tv_show:
-        return jsonify(id=tv_show.id, name=tv_show.name, overview=tv_show.overview), 200
-    return jsonify({"msg": "TV Show not found"}), 404
-
 @app.route('/clubs', methods=['GET'])
 def get_clubs():
-    """Fetch all clubs."""
     try:
         clubs = Club.query.all()
         return jsonify([{"id": club.id, "name": club.name, "genre": club.genre} for club in clubs]), 200
@@ -167,7 +149,6 @@ def get_clubs():
 @app.route('/clubs', methods=['POST'])
 @login_required
 def create_club():
-    """Create a new club."""
     data = request.json
     new_club = Club(
         name=data['name'],
@@ -188,14 +169,17 @@ def get_club(club_id):
             "id": club.id,
             "name": club.name,
             "description": club.description,
-            "genre": club.genre
+            "genre": club.genre,
+            "created_by": club.created_by.username,
+            "members": [{"id": member.id, "username": member.username} for member in club.members],
+            "posts_count": club.posts.count(),
+            "followers_count": club.followers.count()
         }), 200
     return jsonify({"msg": "Club not found"}), 404
 
 @app.route('/club/<int:club_id>/join', methods=['POST'])
 @login_required
 def join_club(club_id):
-    """Join a specified club."""
     user = User.query.get(session['user_id'])
     club = Club.query.get(club_id)
     if club not in user.clubs:
@@ -206,81 +190,26 @@ def join_club(club_id):
 
 @app.route('/club/<int:club_id>/posts', methods=['GET'])
 def get_club_posts(club_id):
-    """Fetch all posts for a specific club."""
     posts = Post.query.filter_by(club_id=club_id).all()
-    return jsonify([{"id": post.id, "content": post.content,
-                      "user_id": post.user_id} for post in posts]), 200
+    return jsonify([{"id": post.id, "title": post.title, "content": post.content, "user_id": post.user_id} for post in posts]), 200
 
-@app.route('/club/<int:club_id>/followers', methods=['GET'])
-def get_club_followers(club_id):
-    """Fetch followers of a specific club."""
-    try:
-        club = Club.query.get(club_id)
-        if club:
-            followers = [user.username for user in club.followers]
-            return jsonify(followers), 200
-        return jsonify({"msg": "Club not found"}), 404
-    except Exception as e:
-        logging.error(f"Error fetching followers for club {club_id}: {e}")
-        return jsonify({"error": "Failed to fetch followers"}), 500
-
-@app.route('/club/<int:club_id>/unfollow', methods=['POST'])
+@app.route('/club/<int:club_id>/posts', methods=['POST'])
 @login_required
-def unfollow_club(club_id):
-    """Unfollow a specific club."""
-    club = Club.query.get(club_id)
-    if club:
-        user = User.query.get(session['user_id'])
-        if club in user.followed_users:
-            user.followed_users.remove(club)
-            db.session.commit()
-            return jsonify({"msg": "Successfully unfollowed the club."}), 200
-        return jsonify({"msg": "You are not following this club."}), 400
-    return jsonify({"msg": "Club not found."}), 404
-
-@app.route('/rate/club/<int:club_id>', methods=['POST'])
-@login_required
-def rate_club(club_id):
-    """Rate a specific club."""
-    data = request.json
-    rating = Rating(score=data['score'], 
-                    user_id=session['user_id'], club_id=club_id)
-                    
-    db.session.add(rating)
-    db.session.commit()
-    return jsonify({"msg": "Rating added successfully."}), 201
-
-@app.route('/post', methods=['POST'])
-@login_required
-def create_post():
-    """Create a new post."""
+def create_club_post(club_id):
     data = request.json
     new_post = Post(
+        title=data['title'],
         content=data['content'],
         user_id=session['user_id'],
-        club_id=data['club_id']
+        club_id=club_id
     )
     db.session.add(new_post)
     db.session.commit()
     return jsonify({"msg": "Post created successfully"}), 201
 
-@app.route('/post/<int:post_id>', methods=['GET'])
-def get_post(post_id):
-    """Fetch details of a specific post."""
-    post = Post.query.get(post_id)
-    if post:
-        return jsonify({
-            "id": post.id,
-            "content": post.content,
-            "user_id": post.user_id,
-            "club_id": post.club_id
-        }), 200
-    return jsonify({"msg": "Post not found"}), 404
-
 @app.route('/post/<int:post_id>/comment', methods=['POST'])
 @login_required
-def add_comment(post_id):
-    """Add a comment to a specific post."""
+def create_comment(post_id):
     data = request.json
     new_comment = Comment(
         content=data['content'],
@@ -289,44 +218,81 @@ def add_comment(post_id):
     )
     db.session.add(new_comment)
     db.session.commit()
-    return jsonify({"msg": "Comment added successfully"}), 201
+    return jsonify({"msg": "Comment created successfully"}), 201
 
-@app.route('/post/<int:post_id>/rate', methods=['POST'])
+@app.route('/post/<int:post_id>/comments', methods=['GET'])
+def get_post_comments(post_id):
+    comments = Comment.query.filter_by(post_id=post_id).all()
+    return jsonify([{"id": comment.id, "content": comment.content, "user_id": comment.user_id} for comment in comments]), 200
+
+@app.route('/rate', methods=['POST'])
 @login_required
-def rate_post(post_id):
+def rate():
     data = request.json
-    new_rating = Rating(score=data['score'], user_id=session['user_id'], post_id=post_id)
-    db.session.add(new_rating)
+    user_id = session['user_id']
+    tmdb_id = data['tmdb_id']
+    rating_value = data['rating']
+    rating = Rating.query.filter_by(user_id=user_id, tmdb_id=tmdb_id).first()
+    if rating:
+        rating.rating = rating_value
+    else:
+        rating = Rating(user_id=user_id, tmdb_id=tmdb_id, rating=rating_value)
+        db.session.add(rating)
     db.session.commit()
-    return jsonify({"msg": "Rating added successfully"}), 201
+    return jsonify({"msg": "Rating submitted successfully"}), 200
 
-@app.route('/profile/settings', methods=['PUT'])
+@app.route('/ratings', methods=['GET'])
 @login_required
-def update_profile():
-    """Update user profile settings."""
+def get_ratings():
+    user_id = session['user_id']
+    ratings = Rating.query.filter_by(user_id=user_id).all()
+    return jsonify([{"tmdb_id": rating.tmdb_id, "rating": rating.rating} for rating in ratings]), 200
+
+@app.route('/watched/movies', methods=['GET'])
+@login_required
+def get_watched_movies():
+    user_id = session['user_id']
+    watched_movies = WatchedMovie.query.filter_by(user_id=user_id).all()
+    return jsonify([{"tmdb_id": wm.tmdb_id, "title": wm.title, "rating": wm.rating} for wm in watched_movies]), 200
+
+@app.route('/watched/tv_shows', methods=['GET'])
+@login_required
+def get_watched_tv_shows():
+    user_id = session['user_id']
+    watched_tv_shows = WatchedTvShow.query.filter_by(user_id=user_id).all()
+    return jsonify([{"tmdb_id": wtv.tmdb_id, "name": wtv.name, "rating": wtv.rating} for wtv in watched_tv_shows]), 200
+
+@app.route('/notifications', methods=['GET'])
+@login_required
+def get_notifications():
+    user_id = session['user_id']
+    notifications = Notification.query.filter_by(user_id=user_id).all()
+    return jsonify([{"id": n.id, "message": n.message, "created_at": n.created_at} for n in notifications]), 200
+
+@app.route('/follow', methods=['POST'])
+@login_required
+def follow():
     data = request.json
-    user = User.query.get(session['user_id'])
-    if user:
-        user.username = data.get('username', user.username)
-        user.email = data.get('email', user.email)
-        user.bio = data.get('bio', user.bio)
-        user.profile_pic = data.get('profile_pic', user.profile_pic)
+    follower_id = session['user_id']
+    followed_id = data['followed_id']
+    if follower_id == followed_id:
+        return jsonify({"msg": "You cannot follow yourself"}), 400
+    if Follows.query.filter_by(follower_id=follower_id, followed_id=followed_id).first():
+        return jsonify({"msg": "Already following"}), 400
+    follow = Follows(follower_id=follower_id, followed_id=followed_id)
+    db.session.add(follow)
+    db.session.commit()
+    return jsonify({"msg": "Followed successfully"}), 200
+
+@app.route('/unfollow', methods=['POST'])
+@login_required
+def unfollow():
+    data = request.json
+    follower_id = session['user_id']
+    followed_id = data['followed_id']
+    follow = Follows.query.filter_by(follower_id=follower_id, followed_id=followed_id).first()
+    if follow:
+        db.session.delete(follow)
         db.session.commit()
-        return jsonify({"msg": "Profile updated successfully."}), 200
-    return jsonify({"msg": "User not found."}), 404
-
-
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get('q')
-    movies = Movie.query.filter(Movie.title.ilike(f'%{query}%')).all()
-    tv_shows = TVShow.query.filter(TVShow.name.ilike(f'%{query}%')).all()
-    users = User.query.filter(User.username.ilike(f'%{query}%')).all()
-    clubs = Club.query.filter(Club.name.ilike(f'%{query}%')).all()
-    results = {
-        "movies": [{"id": m.id, "title": m.title} for m in movies],
-        "tv_shows": [{"id": t.id, "name": t.name} for t in tv_shows],
-        "users": [{"id": u.id, "username": u.username} for u in users],
-        "clubs": [{"id": c.id, "name": c.name} for c in clubs]
-    }
-    return jsonify(results), 200
+        return jsonify({"msg": "Unfollowed successfully"}), 200
+    return jsonify({"msg": "Not following"}), 400

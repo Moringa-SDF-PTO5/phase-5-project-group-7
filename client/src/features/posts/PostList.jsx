@@ -1,37 +1,30 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPosts } from './postsSlice';
-import { Grid, Typography, Alert } from '@mui/material';
-import PostCard from '/home/btsalwa/class/phase-5-project-group-7/client/src/components/PostCard.jsx';
+import { fetchPosts } from './postSlice';
 
-const PostList = () => {
-  const dispatch = useDispatch();
-  const { posts, status, error } = useSelector((state) => state.posts);
+const PostList = ({ clubId }) => {
+    const dispatch = useDispatch();
+    const posts = useSelector((state) => state.posts.posts);
+    const loading = useSelector((state) => state.posts.loading);
+    const error = useSelector((state) => state.posts.error);
 
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchPosts(clubId));
+    }, [dispatch, clubId]);
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
-  if (status === 'failed') {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
-  return (
-    <div>
-      <Typography variant="h4" gutterBottom>Posts</Typography>
-      <Grid container spacing={2}>
-        {posts.map((post) => (
-          <Grid item xs={12} sm={6} md={4} key={post.id}>
-            <PostCard post={post} />
-          </Grid>
-        ))}
-      </Grid>
-    </div>
-  );
+    return (
+        <div>
+            <h2>Posts</h2>
+            <ul>
+                {posts.map((post) => (
+                    <li key={post.id}>{post.content}</li>
+                ))}
+            </ul>
+        </div>
+    );
 };
 
 export default PostList;

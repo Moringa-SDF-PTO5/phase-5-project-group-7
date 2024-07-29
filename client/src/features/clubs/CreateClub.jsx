@@ -1,65 +1,33 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createClub } from './clubsSlice';
-import { Box, TextField, Button, Alert, Typography } from '@mui/material';
+import api from '../../services/api';
+import { useHistory } from 'react-router-dom';
 
 const CreateClub = () => {
-  const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [genre, setGenre] = useState('');
-  const [error, setError] = useState('');
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [genre, setGenre] = useState('');
+    const history = useHistory();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(createClub({ name, description, genre }));
-      // Optionally redirect or show success message
-      setName('');
-      setDescription('');
-      setGenre('');
-    } catch (err) {
-      setError('Failed to create club. Please try again.');
-    }
-  };
+    const handleCreateClub = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/club', { name, description, genre });
+            alert(response.data.msg);
+            history.push('/clubs'); // Redirect to clubs page after creation
+        } catch (error) {
+            alert(error.response.data.msg);
+        }
+    };
 
-  return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>Create New Club</Typography>
-      {error && <Alert severity="error">{error}</Alert>}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Club Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Club Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          multiline
-          rows={4}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Club Genre"
-          value={genre}
-          onChange={(e) => setGenre(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Create Club
-        </Button>
-      </form>
-    </Box>
-  );
+    return (
+        <form onSubmit={handleCreateClub}>
+            <h2>Create Club</h2>
+            <input type="text" placeholder="Club Name" value={name} onChange={(e) => setName(e.target.value)} required />
+            <textarea placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+            <input type="text" placeholder="Genre" value={genre} onChange={(e) => setGenre(e.target.value)} required />
+            <button type="submit">Create Club</button>
+        </form>
+    );
 };
 
 export default CreateClub;

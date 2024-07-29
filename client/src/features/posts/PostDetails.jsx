@@ -1,32 +1,36 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getPostDetails } from './postsSlice';
-import { Box, Typography, Alert } from '@mui/material';
+import { fetchPostDetails } from './postSlice';
+import CommentList from '../comments/CommentList';
+import CreateComment from '../comments/CreateComment';
 
-const PostDetails = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { post, status, error } = useSelector((state) => state.posts);
+const PostDetail = () => {
+    const { id } = useParams();
+    const dispatch = useDispatch();
+    const post = useSelector((state) => state.posts.selectedPost);
+    const loading = useSelector((state) => state.posts.loading);
+    const error = useSelector((state) => state.posts.error);
 
-  useEffect(() => {
-    dispatch(getPostDetails(id));
-  }, [dispatch, id]);
+    useEffect(() => {
+        dispatch(fetchPostDetails(id));
+    }, [dispatch, id]);
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
-  if (status === 'failed') {
-    return <Alert severity="error">{error}</Alert>;
-  }
+    return (
+        <div>
+            <h2>{post.title}</h2>
+            <p>{post.content}</p>
+            <p>Author: {post.author.username}</p>
+            <p>Club: {post.club.name}</p>
 
-  return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>{post.title}</Typography>
-      <Typography variant="body1">{post.content}</Typography>
-    </Box>
-  );
+            <h3>Comments</h3>
+            <CommentList postId={post.id} />
+            <CreateComment postId={post.id} />
+        </div>
+    );
 };
 
-export default PostDetails;
+export default PostDetail;

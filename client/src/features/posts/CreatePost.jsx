@@ -1,41 +1,26 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createPost } from './postsSlice';
-import { Box, TextField, Button, Alert } from '@mui/material';
+import api from '../../services/api';
 
 const CreatePost = ({ clubId }) => {
-  const dispatch = useDispatch();
-  const [content, setContent] = useState('');
-  const [error, setError] = useState('');
+    const [content, setContent] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(createPost({ content, clubId }));
-      setContent('');
-    } catch (err) {
-      setError('Failed to create post. Please try again.');
-    }
-  };
+    const handleCreatePost = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/post', { content, club_id: clubId });
+            alert(response.data.msg);
+        } catch (error) {
+            alert(error.response.data.msg);
+        }
+    };
 
-  return (
-    <Box padding={2}>
-      {error && <Alert severity="error">{error}</Alert>}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Post Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary">
-          Create Post
-        </Button>
-      </form>
-    </Box>
-  );
+    return (
+        <form onSubmit={handleCreatePost}>
+            <h2>Create Post</h2>
+            <textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} required />
+            <button type="submit">Create Post</button>
+        </form>
+    );
 };
 
 export default CreatePost;

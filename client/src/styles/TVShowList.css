@@ -1,0 +1,36 @@
+.tv-show-list {
+    text-align: center;
+    padding: 20px;
+}
+
+.tv-show-list h2 {
+    margin-bottom: 20px;
+}
+
+.tv-show-list ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.tv-show-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.tv-show-list li:last-child {
+    border-bottom: none;
+}
+
+.tv-show-list .title {
+    font-weight: bold;
+}
+
+.tv-show-list .actions button {
+    background-color: #28a745;
+}
+
+.tv-show-list .actions button:hover {
+    background-color: #218838;
+}

@@ -1,0 +1,20 @@
+.rating-component {
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rating-component h6 {
+    margin-bottom: 10px;
+}
+
+.rating-component .MuiRating-root {
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.rating-component .MuiAlert-root {
+    margin-top: 10px;
+}

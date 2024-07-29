@@ -1,33 +1,29 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getMovieDetails } from './moviesSlice';
-import { Box, Typography, Alert } from '@mui/material';
+import { fetchMovieDetail } from './movieSlice';
 
-const MovieDetails = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { movie, status, error } = useSelector((state) => state.movies);
+const MovieDetail = () => {
+    const { id } = useParams();
+    const dispatch = useDispatch();
+    const movie = useSelector((state) => state.movies.selectedMovie);
+    const loading = useSelector((state) => state.movies.loading);
+    const error = useSelector((state) => state.movies.error);
 
-  useEffect(() => {
-    dispatch(getMovieDetails(id));
-  }, [dispatch, id]);
+    useEffect(() => {
+        dispatch(fetchMovieDetail(id));
+    }, [dispatch, id]);
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
-  if (status === 'failed') {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
-  return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>{movie.title}</Typography>
-      <Typography variant="body1">{movie.overview}</Typography>
-      <Typography variant="body2">Release Date: {movie.release_date}</Typography>
-    </Box>
-  );
+    return (
+        <div>
+            <h2>{movie.title}</h2>
+            <p>{movie.overview}</p>
+            <img src={movie.poster_path} alt={movie.title} />
+        </div>
+    );
 };
 
-export default MovieDetails;
+export default MovieDetail;

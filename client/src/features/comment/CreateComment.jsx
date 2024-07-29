@@ -1,40 +1,32 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createComment } from './postsSlice';
-import { Box, TextField, Button, Alert } from '@mui/material';
+import { addComment } from './commentsSlice';
+import { TextInput, Button, Pane } from 'evergreen-ui';
 
 const CreateComment = ({ postId }) => {
   const dispatch = useDispatch();
   const [content, setContent] = useState('');
-  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      await dispatch(createComment({ postId, content }));
-      setContent('');
-    } catch (err) {
-      setError('Failed to add comment. Please try again.');
-    }
+    dispatch(addComment({ post_id: postId, content }));
+    setContent('');
   };
 
   return (
-    <Box padding={2}>
-      {error && <Alert severity="error">{error}</Alert>}
+    <Pane padding={20}>
       <form onSubmit={handleSubmit}>
-        <TextField
-          label="Comment"
+        <TextInput
+          placeholder="Comment Content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
+          marginBottom={10}
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" appearance="primary">
           Add Comment
         </Button>
       </form>
-    </Box>
+    </Pane>
   );
 };
 

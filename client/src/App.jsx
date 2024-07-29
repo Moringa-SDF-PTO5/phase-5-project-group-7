@@ -1,54 +1,36 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from '/home/btsalwa/class/phase-5-project-group-7/client/src/store/store.js';
-import HomePage from './components/HomePage';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import Discover from './pages/Discover';
+import Club from './pages/Club';
+import Profile from './pages/Profile';
+import Search from './pages/Search';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
-import MovieList from './features/movies/MovieList';
-import TVShowList from './features/tvShows/TVShowList';
-import ClubList from './features/clubs/ClubList';
-import PostList from './features/posts/PostList';
-import Profile from './features/auth/Profile';
-import MovieDetails from './features/movies/MovieDetails';
-import TVShowDetails from './features/tvShows/TVShowDetails';
-import ClubDetails from './features/clubs/ClubDetails';
 import CreateClub from './features/clubs/CreateClub';
-import PostDetails from './features/posts/PostDetails';
-import Search from './features/search/Search';
-import './styles.css';
+import CreatePost from './features/posts/CreatePost';
+import ProtectedRoute from '/home/btsalwa/class/phase-5-project-group-7/client/src/components/PrivateRoute.jsx';
 
-const App = () => {
-  return (
-    <Provider store={store}>
-      <Router>
-        <div className="app">
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/movies" element={<MovieList />} />
-              <Route path="/movie/:id" element={<MovieDetails />} />
-              <Route path="/tvShows" element={<TVShowList />} />
-              <Route path="/tvShow/:id" element={<TVShowDetails />} />
-              <Route path="/clubs" element={<ClubList />} />
-              <Route path="/club/:id" element={<ClubDetails />} />
-              <Route path="/create-club" element={<CreateClub />} />
-              <Route path="/posts" element={<PostList />} />
-              <Route path="/post/:id" element={<PostDetails />} />
-              <Route path="/search" element={<Search />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
-    </Provider>
-  );
-};
+function App() {
+    return (
+        <Router>
+            <Header />
+            <Switch>
+                <Route exact path="/" component={Home} />
+                <Route path="/discover" component={Discover} />
+                <ProtectedRoute path="/club/:id" component={Club} />
+                <ProtectedRoute path="/profile" component={Profile} />
+                <Route path="/search" component={Search} />
+                <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
+                <ProtectedRoute path="/create-club" component={CreateClub} />
+                <ProtectedRoute path="/create-post" component={CreatePost} />
+            </Switch>
+            <Footer />
+        </Router>
+    );
+}
 
 export default App;

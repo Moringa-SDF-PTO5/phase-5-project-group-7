@@ -1,64 +1,33 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { userRegister } from './authSlice';
-import { Box, TextField, Button, Alert, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import api from '../../services/api';
 
 const Register = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const history = useHistory();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(userRegister({ username, email, password }));
-      navigate('/login'); // Redirect to login after successful registration
-    } catch (err) {
-      setError('Registration failed. Please try again.');
-    }
-  };
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/register', { username, email, password });
+            alert(response.data.msg);
+            history.push('/login'); // Redirect to login after registration
+        } catch (error) {
+            alert(error.response.data.msg);
+        }
+    };
 
-  return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>Register</Typography>
-      {error && <Alert severity="error">{error}</Alert>}
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Register
-        </Button>
-      </form>
-    </Box>
-  );
+    return (
+        <form onSubmit={handleRegister}>
+            <h2>Register</h2>
+            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <button type="submit">Register</button>
+        </form>
+    );
 };
 
 export default Register;

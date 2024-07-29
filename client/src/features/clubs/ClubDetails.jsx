@@ -1,45 +1,42 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getClubById, getClubPosts } from './clubsSlice';
-import { Box, Typography, Alert } from '@mui/material';
-import PostCard from '/home/btsalwa/class/phase-5-project-group-7/client/src/components/PostCard.jsx';
+import { fetchClubDetails } from './clubSlice';
+import PostList from '../posts/PostList';
 import CreatePost from '../posts/CreatePost';
+import './ClubDetail.css'; // Import CSS for styling
 
-const ClubDetails = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const { currentClub, posts, status, error } = useSelector((state) => state.clubs);
+const ClubDetail = () => {
+    const { id } = useParams();
+    const dispatch = useDispatch();
+    const club = useSelector((state) => state.clubs.selectedClub);
+    const loading = useSelector((state) => state.clubs.loading);
+    const error = useSelector((state) => state.clubs.error);
 
-  useEffect(() => {
-    dispatch(getClubById(id));
-    dispatch(getClubPosts(id));
-  }, [dispatch, id]);
+    useEffect(() => {
+        dispatch(fetchClubDetails(id));
+    }, [dispatch, id]);
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
-  if (status === 'failed') {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
-  if (!currentClub) {
-    return <div>Club not found</div>;
-  }
-
-  return (
-    <Box padding={2}>
-      <Typography variant="h4" gutterBottom>{currentClub.name}</Typography>
-      <Typography variant="body1">Genre: {currentClub.genre}</Typography>
-      <Typography variant="body2">{currentClub.description}</Typography>
-      <CreatePost clubId={currentClub.id} />
-      <Typography variant="h5" gutterBottom>Posts</Typography>
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
-    </Box>
-  );
+    return (
+        <div className="club-detail">
+            <h2>{club.name}</h2>
+            <p>{club.description}</p>
+            <p>Genre: {club.genre}</p>
+            <p>Created by: {club.created_by.username}</p>
+            <h3>Members</h3>
+            <ul>
+                {club.members.map((member) => (
+                    <li key={member.id}>{member.username}</li>
+                ))}
+            </ul>
+            <h3>Posts</h3>
+            <PostList clubId={club.id} />
+            <CreatePost clubId={club.id} />
+        </div>
+    );
 };
 
-export default ClubDetails;
+export default ClubDetail;
