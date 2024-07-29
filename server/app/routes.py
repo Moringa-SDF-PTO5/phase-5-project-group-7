@@ -32,17 +32,22 @@ def discover_movies():
         response = requests.get(endpoint, params=params)
         response.raise_for_status()
         data = response.json()
-        movies = [{
-            "id": movie["id"],
-            "title": movie["title"],
-            "overview": movie["overview"],
-            "release_date": movie["release_date"],
-            "poster_path": movie["poster_path"]
-        } for movie in data.get("results", [])]
+        
+        # Ensure the correct data structure
+        movies = {
+            "results": [{
+                "id": movie["id"],
+                "title": movie["title"],
+                "overview": movie["overview"],
+                "release_date": movie["release_date"],
+                "poster_path": movie["poster_path"]
+            } for movie in data.get("results", [])]
+        }
         return jsonify(movies), 200
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching movies from TMDB API: {e}")
         return jsonify({"error": "Failed to fetch movies"}), 500
+
 
 @app.route('/discover/tv', methods=['GET'])
 def discover_tv_shows():
@@ -59,17 +64,22 @@ def discover_tv_shows():
         response = requests.get(endpoint, params=params)
         response.raise_for_status()
         data = response.json()
-        tv_shows = [{
-            "id": show["id"],
-            "name": show["name"],
-            "overview": show["overview"],
-            "first_air_date": show["first_air_date"],
-            "poster_path": show["poster_path"]
-        } for show in data.get("results", [])]
+        
+        # Ensure the correct data structure
+        tv_shows = {
+            "results": [{
+                "id": show["id"],
+                "name": show["name"],
+                "overview": show["overview"],
+                "first_air_date": show["first_air_date"],
+                "poster_path": show["poster_path"]
+            } for show in data.get("results", [])]
+        }
         return jsonify(tv_shows), 200
     except requests.exceptions.RequestException as e:
         logging.error(f"Error fetching TV shows from TMDB API: {e}")
         return jsonify({"error": "Failed to fetch TV shows"}), 500
+
 
 @app.route('/find/<int:tmdb_id>', methods=['GET'])
 def find_by_id(tmdb_id):

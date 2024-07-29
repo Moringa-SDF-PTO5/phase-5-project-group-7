@@ -1,23 +1,14 @@
-.discover {
-    text-align: center;
-    padding: 20px;
-}
-
-.discover h1 {
-    margin-bottom: 20px;
-}
-
-.discover .list-container {
+.movies-list, .tvshows-list {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
 }
 
-.discover .list-container div {
-    flex: 1;
+.movie-item, .tvshow-item {
     margin: 10px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 200px; /* Adjust as needed */
+}
+
+img {
+    width: 100%;
+    border-radius: 5px;
 }
