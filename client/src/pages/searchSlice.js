@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '/home/btsalwa/class/phase-5-project-group-7/client/src/services/api.js'; // Make sure your API service is correctly set up
+import api from '../services/api'; // Make sure your API service is correctly set up
 
 // Async thunk to handle search functionality
 export const searchItems = createAsyncThunk('search/searchItems', async (query) => {

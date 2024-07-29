@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPosts } from '/home/btsalwa/class/phase-5-project-group-7/client/src/features/posts/postsSlice.js';
+import { fetchPosts } from '../../features/posts/postsSlice';
 
 const PostList = ({ clubId }) => {
     const dispatch = useDispatch();

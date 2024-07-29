@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
-import ProfileIcon from '/home/btsalwa/class/phase-5-project-group-7/client/src/features/auth/ProfileIcon.jsx';
+import ProfileIcon from '../features/auth/ProfileIcon';
 
 const Header = () => {
     const dispatch = useDispatch();
