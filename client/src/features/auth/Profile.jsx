@@ -1,52 +1,67 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
-import { login } from '../features/auth/authSlice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUserProfile, updateUserProfile } from '../features/auth/authSlice';
+import './Profile.css'; // Import CSS for styling
 
-const Login = () => {
+const Profile = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Use useNavigate
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const user = useSelector((state) => state.auth.user);
+    const loading = useSelector((state) => state.auth.loading);
+    const error = useSelector((state) => state.auth.error);
 
-    const handleSubmit = async (e) => {
+    const [bio, setBio] = useState('');
+    const [profilePic, setProfilePic] = useState('');
+    const [updateSuccess, setUpdateSuccess] = useState(false);
+
+    useEffect(() => {
+        dispatch(fetchUserProfile());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (user) {
+            setBio(user.bio || '');
+            setProfilePic(user.profile_pic || '');
+        }
+    }, [user]);
+
+    const handleUpdateProfile = async (e) => {
         e.preventDefault();
         try {
-            await dispatch(login({ email, password })).unwrap();
-            navigate('/profile'); // Use navigate instead of history.push
+            const updatedData = { bio, profile_pic: profilePic };
+            await dispatch(updateUserProfile(updatedData));
+            setUpdateSuccess(true);
         } catch (err) {
-            setError('Failed to log in. Please check your credentials and try again.');
+            console.error('Failed to update profile:', err);
+            // Optionally, handle the error here (e.g., show an error message)
         }
     };
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="profile">
+            <h2>User Profile</h2>
+            <form onSubmit={handleUpdateProfile}>
                 <div>
-                    <label>Email:</label>
-                    <input 
-                        type="email" 
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                        required 
-                    />
+                    <label>Username: {user.username}</label>
                 </div>
                 <div>
-                    <label>Password:</label>
-                    <input 
-                        type="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
-                    />
+                    <label>Email: {user.email}</label>
                 </div>
-                {error && <p>{error}</p>}
-                <button type="submit">Login</button>
+                <div>
+                    <label>Bio:</label>
+                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+                </div>
+                <div>
+                    <label>Profile Picture URL:</label>
+                    <input type="text" value={profilePic} onChange={(e) => setProfilePic(e.target.value)} />
+                </div>
+                <button type="submit">Update Profile</button>
+                {updateSuccess && <p>Profile updated successfully!</p>}
             </form>
         </div>
     );
 };
 
-export default Login;
+export default Profile;
