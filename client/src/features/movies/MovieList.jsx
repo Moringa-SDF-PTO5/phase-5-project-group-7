@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovies } from './movieSlice';
+import '/home/btsalwa/class/phase-5-project-group-7/client/src/styles/MovieList.css'
+
 
 const MovieList = () => {
     const dispatch = useDispatch();
