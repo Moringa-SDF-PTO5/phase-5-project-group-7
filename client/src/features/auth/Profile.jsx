@@ -11,29 +11,19 @@ const Profile = () => {
 
     const [bio, setBio] = useState('');
     const [profilePic, setProfilePic] = useState('');
-    const [updateSuccess, setUpdateSuccess] = useState(false);
-
-    useEffect(() => {
-        dispatch(fetchUserProfile());
-    }, [dispatch]);
 
     useEffect(() => {
         if (user) {
             setBio(user.bio || '');
             setProfilePic(user.profile_pic || '');
         }
-    }, [user]);
+        dispatch(fetchUserProfile());
+    }, [dispatch, user]);
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        try {
-            const updatedData = { bio, profile_pic: profilePic };
-            await dispatch(updateUserProfile(updatedData));
-            setUpdateSuccess(true);
-        } catch (err) {
-            console.error('Failed to update profile:', err);
-            // Optionally, handle the error here (e.g., show an error message)
-        }
+        const updatedData = { bio, profile_pic: profilePic };
+        await dispatch(updateUserProfile(updatedData));
     };
 
     if (loading) return <div>Loading...</div>;
@@ -58,7 +48,6 @@ const Profile = () => {
                     <input type="text" value={profilePic} onChange={(e) => setProfilePic(e.target.value)} />
                 </div>
                 <button type="submit">Update Profile</button>
-                {updateSuccess && <p>Profile updated successfully!</p>}
             </form>
         </div>
     );

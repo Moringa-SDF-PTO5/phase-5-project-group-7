@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchClubDetails } from './clubSlice';
+import { fetchClubDetail } from './clubSlice';
 import PostList from '../posts/PostList';
 import CreatePost from '../posts/CreatePost';
 import '../../styles/ClubDetail.css'; // Import CSS for styling
@@ -14,11 +14,13 @@ const ClubDetail = () => {
     const error = useSelector((state) => state.clubs.error);
 
     useEffect(() => {
-        dispatch(fetchClubDetails(id));
+        dispatch(fetchClubDetail(id));
     }, [dispatch, id]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
+
+    if (!club) return <div>No Club Found</div>;
 
     return (
         <div className="club-detail">

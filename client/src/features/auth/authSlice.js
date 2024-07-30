@@ -1,23 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-// Define the async thunks for user actions
-export const updateUserProfile = createAsyncThunk(
-  'auth/updateUserProfile',
-  async (updatedData) => {
-    const response = await api.put('/user/profile', updatedData);
-    return response.data;
+export const updateUserProfile = createAsyncThunk('auth/updateUserProfile', async (updatedData, thunkAPI) => {
+  try {
+      const response = await api.put('/user/profile', updatedData);
+      return response.data;
+  } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
   }
-);
+});
 
 export const fetchUserProfile = createAsyncThunk('auth/fetchUserProfile', async () => {
   const response = await api.get('/user/profile');
   return response.data;
 });
 
-export const login = createAsyncThunk('auth/login', async (credentials) => {
-  const response = await api.post('/login', credentials);
-  return response.data;
+export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
+  try {
+      const response = await api.post('http://127.0.0.1:10000/login', credentials, {
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      return response.data;
+  } catch (error) {
+      return rejectWithValue(error.response.data);
+  }
 });
 
 export const register = createAsyncThunk('auth/register', async (userData) => {
@@ -37,6 +45,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
+    isLoggedIn: !!sessionStorage.getItem('token'),
     loading: false,
     error: null,
   },
@@ -55,8 +64,9 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        sessionStorage.setItem('token', action.payload.token); // Store the token
-      })
+        state.isLoggedIn = true;
+        sessionStorage.setItem('token', action.payload.token);
+    })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;

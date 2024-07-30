@@ -18,9 +18,8 @@ const Login = () => {
         setError('');
         try {
             const result = await dispatch(login({ username, password })).unwrap();
-            // Assuming the result includes a token
             sessionStorage.setItem('token', result.token); // Store token in sessionStorage
-            navigate('/profile');
+            navigate('/clubs'); // Navigate to a protected route after successful login
         } catch (err) {
             setError('Failed to log in. Please check your credentials and try again.');
         } finally {
@@ -34,20 +33,20 @@ const Login = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Username:</label>
-                    <input 
-                        type="text" 
-                        value={username} 
-                        onChange={(e) => setUsername(e.target.value)} 
-                        required 
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
                     />
                 </div>
                 <div className="form-group">
                     <label>Password:</label>
-                    <input 
-                        type="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
                 </div>
                 {error && <p className="error">{error}</p>}

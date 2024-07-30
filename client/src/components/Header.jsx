@@ -22,11 +22,9 @@ const Header = () => {
                 <Link to="/clubs">Clubs</Link>
                 {isLoggedIn ? (
                     <>
-                        <Link to="/profile">
-                            <ProfileIcon user={user} />
-                        </Link>
-                        <button onClick={handleLogout}>Logout</button>
-                    </>
+                    <ProfileIcon user={user} />
+                    <button onClick={handleLogout}>Logout</button>
+                </>
                 ) : (
                     <>
                         <Link to="/login">Login</Link>

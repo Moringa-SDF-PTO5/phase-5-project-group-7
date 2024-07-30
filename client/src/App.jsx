@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from '../src/store/store';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Discover from './pages/Discover';
-import Club from './pages/Clubs';
+import ClubDetail from './features/clubs/ClubDetails';
 import Profile from './pages/Profile';
 import Search from './pages/Search';
 import Login from './features/auth/Login';
@@ -21,50 +23,15 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/discover" element={<Discover />} />
-                
-                <Route
-                    path="/club/:id"
-                    element={
-                        <ProtectedRoute>
-                            <Club />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/profile"
-                    element={
-                        <ProtectedRoute>
-                            <Profile />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/clubs" element={<Clubs />} />
+                <Route path="/club/:id" element={<ProtectedRoute><ClubDetail /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route
-                    path="/create-club"
-                    element={
-                        <ProtectedRoute>
-                            <CreateClub />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/create-post"
-                    element={
-                        <ProtectedRoute>
-                            <CreatePost />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/clubs"
-                    element={
-                        <ProtectedRoute>
-                            <Clubs />
-                        </ProtectedRoute>
-                    }
-                />
+                <Route path="/create-club" element={<ProtectedRoute><CreateClub /></ProtectedRoute>} />
+                <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+                <Route path="/clubs" element={<ProtectedRoute><Clubs /></ProtectedRoute>} />
             </Routes>
             <Footer />
         </Router>

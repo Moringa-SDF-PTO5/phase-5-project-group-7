@@ -146,28 +146,62 @@ def logout():
     session.pop('username', None)
     return jsonify({"msg": "Logged out successfully"}), 200
 
+@app.route('/user/profile', methods=['GET', 'PUT'])
+@login_required
+def user_profile():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"msg": "User not authenticated"}), 401
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    if request.method == 'GET':
+        return jsonify({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "profile_pic": user.profile_pic,
+            "bio": user.bio,
+            "created_at": user.created_at
+        }), 200
+
+    if request.method == 'PUT':
+        data = request.get_json()
+        user.bio = data.get('bio', user.bio)
+        user.profile_pic = data.get('profile_pic', user.profile_pic)
+        db.session.commit()
+        return jsonify({"msg": "Profile updated successfully"}), 200
+
 @app.route('/clubs', methods=['GET'])
 def get_clubs():
     try:
         clubs = Club.query.all()
-        return jsonify([{"id": club.id, "name": club.name, "genre": club.genre} for club in clubs]), 200
+        response = jsonify([{"id": club.id, "name": club.name, "genre": club.genre} for club in clubs])
+        print(response.data)  # Log the response data for debugging
+        return response
     except Exception as e:
         logging.error(f"Error fetching clubs: {e}")
         return jsonify({"error": "Failed to fetch clubs"}), 500
-
 @app.route('/clubs', methods=['POST'])
 @login_required
 def create_club():
     data = request.json
-    new_club = Club(
-        name=data['name'],
-        description=data['description'],
-        genre=data['genre'],
-        created_by_id=session['user_id']
-    )
-    db.session.add(new_club)
-    db.session.commit()
-    return jsonify({"msg": "Club created successfully"}), 201
+    try:
+        new_club = Club(
+            name=data['name'],
+            description=data['description'],
+            genre=data['genre'],
+            created_by_id=session['user_id']
+        )
+        db.session.add(new_club)
+        db.session.commit()
+        return jsonify({"msg": "Club created successfully"}), 201
+    except KeyError as e:
+        return jsonify({"error": f"Missing field: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/club/<int:club_id>', methods=['GET'])
 def get_club(club_id):
