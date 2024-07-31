@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserProfile, updateUserProfile } from '../features/auth/authSlice';
-import '/home/btsalwa/class/phase-5-project-group-7/client/src/styles/Profile.css'; // Import CSS for styling
+import '/home/irene/Development/code/flask2/project/phase-5-project-group-7/client/src/styles/Profile.css'; // Import CSS for styling
 
 const Profile = () => {
     const dispatch = useDispatch();

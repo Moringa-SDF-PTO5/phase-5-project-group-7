@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchItems } from '/home/btsalwa/class/phase-5-project-group-7/client/src/pages/searchSlice.js';
+import { searchItems } from '/home/irene/Development/code/flask2/project/phase-5-project-group-7/client/src/pages/searchSlice.js';
 
 const Search = () => {
     const dispatch = useDispatch();
