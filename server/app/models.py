@@ -32,6 +32,9 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    clubs = db.relationship('Club', secondary='club_members', back_populates='members')
+
 
 class Movie(db.Model):
     __tablename__ = 'movies'
@@ -70,6 +73,9 @@ class Club(db.Model):
     members = db.relationship('User', secondary='club_members')
     posts = db.relationship('Post', back_populates='club', lazy='dynamic')
     ratings = db.relationship('Rating', back_populates='club', lazy='dynamic')
+
+    members = db.relationship('User', secondary='club_members', back_populates='clubs')
+
 
 class ClubMembers(db.Model):
     __tablename__ = 'club_members'
