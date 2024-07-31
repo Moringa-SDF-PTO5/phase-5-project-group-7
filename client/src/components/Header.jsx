@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import ProfileIcon from '../features/auth/ProfileIcon';
+import '../styles/Header.css'
 
 const Header = () => {
     const dispatch = useDispatch();

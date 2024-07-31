@@ -2,6 +2,11 @@ header {
     background-color: #282c34;
     padding: 20px;
     color: white;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000; /* Ensures header stays on top */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds a slight shadow */
 }
 
 nav {
@@ -14,11 +19,39 @@ nav a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+nav a:hover {
+    color: #61dafb; /* Change color on hover for better UX */
 }
 
 nav button {
-    background-color: transparent;
-    color: white;
+    background-color: #61dafb; /* Button background color */
+    color: #282c34; /* Button text color */
     border: none;
     cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+nav button:hover {
+    background-color: #21a1f1; /* Darker shade on hover */
+}
+
+/* Additional styles for mobile responsiveness */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav a {
+        margin: 10px 0; /* Spacing for links in vertical layout */
+    }
+
+    nav button {
+        margin-top: 10px; /* Spacing for button in vertical layout */
+    }
 }

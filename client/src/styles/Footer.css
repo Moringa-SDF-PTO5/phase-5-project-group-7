@@ -1,9 +1,13 @@
 footer {
-    background-color: #282c34;
+    background-color: #e23618;
     color: white;
     text-align: center;
-    padding: 10px 0;
-    position: relative;
+    padding: 20px 0;
+    position: fixed;
     bottom: 0;
     width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
 }
