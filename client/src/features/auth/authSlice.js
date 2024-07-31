@@ -17,17 +17,14 @@ export const fetchUserProfile = createAsyncThunk('auth/fetchUserProfile', async 
 
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
-      const response = await api.post('http://127.0.0.1:10000/login', credentials, {
-          headers: {
-              'Content-Type': 'application/json',
-          },
+      const response = await api.post('/login', credentials, {
+          headers: { 'Content-Type': 'application/json' },
       });
       return response.data;
   } catch (error) {
       return rejectWithValue(error.response.data);
   }
 });
-
 export const register = createAsyncThunk('auth/register', async (userData) => {
   const response = await api.post('/register', userData);
   return response.data;
@@ -36,8 +33,8 @@ export const register = createAsyncThunk('auth/register', async (userData) => {
 // Define synchronous logout action
 export const logout = () => {
   return (dispatch) => {
-    sessionStorage.removeItem('token'); // Clear the token on logout
-    dispatch({ type: 'auth/logout' }); // Optional: dispatch an action to update the store
+      sessionStorage.removeItem('token'); // Clear the token on logout
+      dispatch({ type: 'auth/logout' }); // Optional: dispatch an action to update the store
   };
 };
 
@@ -52,6 +49,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
+      state.isLoggedIn = false;
       sessionStorage.removeItem('token');
     },
   },
@@ -63,13 +61,13 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isLoggedIn = true;
         sessionStorage.setItem('token', action.payload.token);
     })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload?.message || 'Failed to log in';
       })
       .addCase(register.pending, (state) => {
         state.loading = true;

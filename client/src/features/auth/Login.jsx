@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from './authSlice';
-import '../../styles/Login.css';  // Assuming you have a CSS file for styling
+import '../../styles/Login.css';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -22,6 +22,7 @@ const Login = () => {
             navigate('/clubs'); // Navigate to a protected route after successful login
         } catch (err) {
             setError('Failed to log in. Please check your credentials and try again.');
+            console.error('Login error:', err);
         } finally {
             setLoading(false);
         }

@@ -3,14 +3,25 @@ import api from '../../services/api';
 
 const NotificationList = () => {
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchNotifications = async () => {
-            const response = await api.get('/notifications');
-            setNotifications(response.data);
+            try {
+                const response = await api.get('/notifications');
+                setNotifications(response.data);
+            } catch (err) {
+                setError('Failed to load notifications.');
+            } finally {
+                setLoading(false);
+            }
         };
         fetchNotifications();
     }, []);
+
+    if (loading) return <div>Loading notifications...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div>

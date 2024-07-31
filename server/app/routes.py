@@ -1,6 +1,7 @@
 from flask import request, jsonify, session, current_app as app
 from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating, WatchedMovie, WatchedTvShow, Notification, Follows
 from functools import wraps
+from werkzeug.exceptions import BadRequest
 import requests
 import logging
 
@@ -12,8 +13,11 @@ def get_tmdb_url(endpoint: str) -> str:
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        logging.info(f'Session data: {session}')
         if 'user_id' not in session:
+            logging.error('Authentication required: User not logged in')
             return jsonify({"msg": "Authentication required"}), 401
+        logging.info(f'User {session["user_id"]} is authenticated')
         return f(*args, **kwargs)
     return decorated_function
 
@@ -136,7 +140,9 @@ def login():
     if user and user.check_password(data['password']):
         session['user_id'] = user.id
         session['username'] = user.username
+        logging.info(f'User {user.id} logged in successfully')
         return jsonify({"msg": "Logged in successfully"}), 200
+    logging.error('Invalid username or password')
     return jsonify({"msg": "Invalid username or password"}), 401
 
 @app.route('/logout', methods=['POST'])
@@ -187,17 +193,28 @@ def get_clubs():
 @app.route('/clubs', methods=['POST'])
 @login_required
 def create_club():
+    if 'user_id' not in session:
+        return jsonify({"error": "Unauthorized access, user not logged in"}), 401
+
     data = request.json
     try:
+        # Basic field validation
+        if not all(field in data for field in ['name', 'description', 'genre']):
+            raise BadRequest("Missing required fields")
+
+        # Create new club instance
         new_club = Club(
             name=data['name'],
             description=data['description'],
             genre=data['genre'],
             created_by_id=session['user_id']
         )
+        # Add and commit to the database
         db.session.add(new_club)
         db.session.commit()
         return jsonify({"msg": "Club created successfully"}), 201
+    except BadRequest as e:
+        return jsonify({"error": str(e)}), 400
     except KeyError as e:
         return jsonify({"error": f"Missing field: {str(e)}"}), 400
     except Exception as e:

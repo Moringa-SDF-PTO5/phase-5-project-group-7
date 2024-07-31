@@ -6,19 +6,20 @@ const api = axios.create({
 
 // Add an interceptor to include the token in the headers if needed
 api.interceptors.request.use((config) => {
-    const token = sessionStorage.getItem('token'); // Assuming you're using session storage
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  const token = sessionStorage.getItem('token');
+  if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      // Handle errors globally
-      console.error('API request error:', error);
+  (response) => response,
+  (error) => {
+      console.error('API request error:', error.response ? error.response.data : error.message);
       return Promise.reject(error);
-    }
-  );
+  }
+);
 
 export default api;

@@ -18,23 +18,24 @@ import ProtectedRoute from './components/PrivateRoute';
 
 function App() {
     return (
-        <Router>
-            <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/discover" element={<Discover />} />
-                <Route path="/clubs" element={<Clubs />} />
-                <Route path="/club/:id" element={<ProtectedRoute><ClubDetail /></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/create-club" element={<ProtectedRoute><CreateClub /></ProtectedRoute>} />
-                <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
-                <Route path="/clubs" element={<ProtectedRoute><Clubs /></ProtectedRoute>} />
-            </Routes>
-            <Footer />
-        </Router>
+        <Provider store={store}>
+            <Router>
+                <Header />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/discover" element={<Discover />} />
+                    <Route path="/clubs" element={<ProtectedRoute><Clubs /></ProtectedRoute>} />
+                    <Route path="/club/:id" element={<ProtectedRoute><ClubDetail /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/create-club" element={<ProtectedRoute><CreateClub /></ProtectedRoute>} />
+                    <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+                </Routes>
+                <Footer />
+            </Router>
+        </Provider>
     );
 }
 
