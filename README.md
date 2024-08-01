@@ -92,6 +92,8 @@ npm run dev to give you URL to local host
 ```
 ### Backend (Flask with Postgres)
 
+ ## Backend deployed link : https://phase-5-project-group-7.onrender.com
+ 
 cd server
 pipenv install && pipenvshell
 pipenv run python run.app to start server with URL link
