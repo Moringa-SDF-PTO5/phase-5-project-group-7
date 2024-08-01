@@ -7,6 +7,35 @@ Movies/Series Club
 
 Brief description of your project.
 
+  Movies/Series Club is a web application designed to allow users to create and manage clubs centered around their favorite movies and series. Users can join clubs, create posts about their interests, and interact with other members.
+Purpose
+
+The main purpose of the application is to provide a platform where fans of movies and series can gather, share their thoughts, and engage with like-minded individuals in a structured and interactive environment.
+Key Features
+
+    User Authentication:
+        Registration: Users can create accounts.
+        Login: Users can authenticate and access their accounts.
+        Profile Management: Users can update their profiles.
+
+    Club Management:
+        Create Clubs: Users can create new clubs with details like name, description, and genre.
+        View Club Details: Users can view detailed information about clubs, including members and posts.
+        Update Clubs: Users can update club details.
+        Delete Clubs: Users can remove clubs they no longer wish to manage.
+
+    Post Management:
+        Create Posts: Users can add new posts within clubs.
+        View Posts: Users can see posts within a club.
+        Delete Posts: Users can delete posts they have created.
+
+    Club Membership:
+        Join Clubs: Users can join existing clubs.
+        Leave Clubs: Users can leave clubs they are no longer interested in.
+
+    Responsive Design:
+        The application is designed to be responsive and user-friendly on various devices, including desktops, tablets, and smartphones.
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
