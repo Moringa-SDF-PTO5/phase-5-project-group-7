@@ -13,8 +13,8 @@ const Discover = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const movieResponse = await axios.get('http://127.0.0.1:10000/discover/movies');
-                const tvShowResponse = await axios.get('http://127.0.0.1:10000/discover/tv');
+                const movieResponse = await axios.get('https://phase-5-project-group-7.onrender.com/discover/movies');
+                const tvShowResponse = await axios.get('https://phase-5-project-group-7.onrender.com/discover/tv');
 
                 setMovies(movieResponse.data.results || []);
                 setTvShows(tvShowResponse.data.results || []);
