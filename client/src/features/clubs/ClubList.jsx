@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom';
 import '../../styles/Clubs.css';
 
-const ClubList = () => {
+const useClubs = () => {
     const [clubs, setClubs] = useState([]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchClubs = async () => {
-            const response = await api.get('/clubs');
-            setClubs(response.data);
+            try {
+                const response = await api.get('/clubs');
+                if (response.data && Array.isArray(response.data)) {
+                    setClubs(response.data);
+                } else {
+                    setError('Unexpected response format');
+                }
+            } catch (err) {
+                setError('Failed to fetch clubs');
+                console.error('Fetch clubs error:', err);
+            }
         };
         fetchClubs();
     }, []);
+
+    return { clubs, error };
+};
+
+const ClubList = () => {
+    const { clubs, error } = useClubs();
+
+    if (error) return <div>Error: {error}</div>;
+    if (clubs.length === 0) return <div>No Clubs Found</div>;
 
     return (
         <div>
@@ -20,7 +39,7 @@ const ClubList = () => {
             <ul>
                 {clubs.map(club => (
                     <li key={club.id}>
-                        <Link to={`/clubs/${club.id}`}>{club.name}</Link> {/* Link to the club detail page */}
+                        <Link to={`/clubs/${club.id}`}>{club.name}</Link>
                     </li>
                 ))}
             </ul>

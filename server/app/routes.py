@@ -1,8 +1,11 @@
 from flask import request, jsonify, session, current_app as app
 from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating, WatchedMovie, WatchedTvShow, Notification, Follows
 from functools import wraps
+from datetime import datetime, timedelta
 from werkzeug.exceptions import BadRequest
+
 import requests
+import jwt
 import logging
 
 logging.basicConfig(level=logging.ERROR)
@@ -13,11 +16,17 @@ def get_tmdb_url(endpoint: str) -> str:
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        logging.info(f'Session data: {session}')
-        if 'user_id' not in session:
-            logging.error('Authentication required: User not logged in')
+        token = request.headers.get('Authorization')
+        if token is None:
             return jsonify({"msg": "Authentication required"}), 401
-        logging.info(f'User {session["user_id"]} is authenticated')
+        try:
+            token = token.split(" ")[1]
+            decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            session['user_id'] = decoded_token['user_id']
+            app.logger.debug(f"Token decoded, user_id: {session['user_id']}")
+        except Exception as e:
+            app.logger.debug(f"Token error: {e}")
+            return jsonify({"msg": "Invalid token"}), 401
         return f(*args, **kwargs)
     return decorated_function
 
@@ -131,18 +140,18 @@ def register():
     new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({"msg": "User created successfully"}), 201
+    token = jwt.encode({'user_id': new_user.id, 'exp': datetime.utcnow() + timedelta(hours=24)}, app.config['SECRET_KEY'], algorithm="HS256")
+    return jsonify({"msg": "User created successfully", "token": token, "user_id": new_user.id}), 201
 
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(username=data['username']).first()
     if user and user.check_password(data['password']):
-        session['user_id'] = user.id
-        session['username'] = user.username
-        logging.info(f'User {user.id} logged in successfully')
-        return jsonify({"msg": "Logged in successfully"}), 200
-    logging.error('Invalid username or password')
+        token = jwt.encode({'user_id': user.id, 'exp': datetime.utcnow() + timedelta(hours=24)}, app.config['SECRET_KEY'], algorithm="HS256")
+        session['user_id'] = user.id  # Ensure the session is set here
+        app.logger.debug(f"User logged in: {user.id}")
+        return jsonify({"msg": "Logged in successfully", "token": token, "user_id": user.id}), 200
     return jsonify({"msg": "Invalid username or password"}), 401
 
 @app.route('/logout', methods=['POST'])
@@ -194,33 +203,31 @@ def get_clubs():
 @login_required
 def create_club():
     if 'user_id' not in session:
+        app.logger.debug("Unauthorized access, user not logged in")
         return jsonify({"error": "Unauthorized access, user not logged in"}), 401
 
     data = request.json
     try:
-        # Basic field validation
         if not all(field in data for field in ['name', 'description', 'genre']):
             raise BadRequest("Missing required fields")
 
-        # Create new club instance
         new_club = Club(
             name=data['name'],
             description=data['description'],
             genre=data['genre'],
             created_by_id=session['user_id']
         )
-        # Add and commit to the database
         db.session.add(new_club)
         db.session.commit()
-        return jsonify({"msg": "Club created successfully"}), 201
+        return jsonify({"msg": "Club created successfully", "club_id": new_club.id}), 201
     except BadRequest as e:
         return jsonify({"error": str(e)}), 400
     except KeyError as e:
         return jsonify({"error": f"Missing field: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@app.route('/club/<int:club_id>', methods=['GET'])
+    
+@app.route('/clubs/<int:club_id>', methods=['GET'])
 def get_club(club_id):
     """Fetch details of a specific club."""
     club = Club.query.get(club_id)
@@ -233,20 +240,26 @@ def get_club(club_id):
             "created_by": club.created_by.username,
             "members": [{"id": member.id, "username": member.username} for member in club.members],
             "posts_count": club.posts.count(),
-            "followers_count": club.followers.count()
+            "followers_count": len(club.followers)  # Number of followers
         }), 200
     return jsonify({"msg": "Club not found"}), 404
+
 
 @app.route('/club/<int:club_id>/join', methods=['POST'])
 @login_required
 def join_club(club_id):
-    user = User.query.get(session['user_id'])
-    club = Club.query.get(club_id)
-    if club not in user.clubs:
-        user.clubs.append(club)
-        db.session.commit()
-        return jsonify({"msg": "Joined club successfully"}), 200
-    return jsonify({"msg": "Already a member of this club"}), 400
+    try:
+        user = User.query.get(session['user_id'])
+        club = Club.query.get(club_id)
+        if club not in user.clubs:
+            user.clubs.append(club)
+            db.session.commit()
+            return jsonify({"msg": "Joined club successfully"}), 200
+        return jsonify({"msg": "Already a member of this club"}), 400
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error joining club: {e}")
+        return jsonify({"error": "Failed to join club"}), 500
 
 @app.route('/club/<int:club_id>/posts', methods=['GET'])
 def get_club_posts(club_id):
@@ -254,7 +267,7 @@ def get_club_posts(club_id):
     return jsonify([{"id": post.id, "title": post.title, "content": post.content, "user_id": post.user_id} for post in posts]), 200
 
 @app.route('/club/<int:club_id>/posts', methods=['POST'])
-@login_required
+# @login_required
 def create_club_post(club_id):
     data = request.json
     new_post = Post(
@@ -268,7 +281,7 @@ def create_club_post(club_id):
     return jsonify({"msg": "Post created successfully"}), 201
 
 @app.route('/post/<int:post_id>/comment', methods=['POST'])
-@login_required
+# @login_required
 def create_comment(post_id):
     data = request.json
     new_comment = Comment(
@@ -286,7 +299,7 @@ def get_post_comments(post_id):
     return jsonify([{"id": comment.id, "content": comment.content, "user_id": comment.user_id} for comment in comments]), 200
 
 @app.route('/rate', methods=['POST'])
-@login_required
+# @login_required
 def rate():
     data = request.json
     user_id = session['user_id']
@@ -302,35 +315,35 @@ def rate():
     return jsonify({"msg": "Rating submitted successfully"}), 200
 
 @app.route('/ratings', methods=['GET'])
-@login_required
+# @login_required
 def get_ratings():
     user_id = session['user_id']
     ratings = Rating.query.filter_by(user_id=user_id).all()
     return jsonify([{"tmdb_id": rating.tmdb_id, "rating": rating.rating} for rating in ratings]), 200
 
 @app.route('/watched/movies', methods=['GET'])
-@login_required
+# @login_required
 def get_watched_movies():
     user_id = session['user_id']
     watched_movies = WatchedMovie.query.filter_by(user_id=user_id).all()
     return jsonify([{"tmdb_id": wm.tmdb_id, "title": wm.title, "rating": wm.rating} for wm in watched_movies]), 200
 
 @app.route('/watched/tv_shows', methods=['GET'])
-@login_required
+# @login_required
 def get_watched_tv_shows():
     user_id = session['user_id']
     watched_tv_shows = WatchedTvShow.query.filter_by(user_id=user_id).all()
     return jsonify([{"tmdb_id": wtv.tmdb_id, "name": wtv.name, "rating": wtv.rating} for wtv in watched_tv_shows]), 200
 
 @app.route('/notifications', methods=['GET'])
-@login_required
+# @login_required
 def get_notifications():
     user_id = session['user_id']
     notifications = Notification.query.filter_by(user_id=user_id).all()
     return jsonify([{"id": n.id, "message": n.message, "created_at": n.created_at} for n in notifications]), 200
 
 @app.route('/follow', methods=['POST'])
-@login_required
+# @login_required
 def follow():
     data = request.json
     follower_id = session['user_id']
@@ -345,7 +358,7 @@ def follow():
     return jsonify({"msg": "Followed successfully"}), 200
 
 @app.route('/unfollow', methods=['POST'])
-@login_required
+# @login_required
 def unfollow():
     data = request.json
     follower_id = session['user_id']

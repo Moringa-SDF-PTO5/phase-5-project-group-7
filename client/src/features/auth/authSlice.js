@@ -17,23 +17,26 @@ export const fetchUserProfile = createAsyncThunk('auth/fetchUserProfile', async 
 
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
-      const response = await api.post('/login', credentials, {
-          headers: { 'Content-Type': 'application/json' },
-      });
-      return response.data;
+    const response = await api.post('/login', credentials);
+    return response.data;
   } catch (error) {
-      return rejectWithValue(error.response.data);
+    return rejectWithValue(error.response.data);
   }
 });
-export const register = createAsyncThunk('auth/register', async (userData) => {
-  const response = await api.post('/register', userData);
-  return response.data;
+export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await api.post('/register', userData);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
 // Define synchronous logout action
 export const logout = () => {
   return (dispatch) => {
-      sessionStorage.removeItem('token'); // Clear the token on logout
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user_id'); // Clear the token on logout
       dispatch({ type: 'auth/logout' }); // Optional: dispatch an action to update the store
   };
 };
@@ -51,6 +54,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isLoggedIn = false;
       sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user_id');
     },
   },
   extraReducers: (builder) => {
@@ -64,6 +68,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.isLoggedIn = true;
         sessionStorage.setItem('token', action.payload.token);
+        sessionStorage.setItem('user_id', action.payload.user_id);
     })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -76,7 +81,8 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        sessionStorage.setItem('token', action.payload.token); // Store the token
+        sessionStorage.setItem('token', action.payload.token);
+        sessionStorage.setItem('user_id', action.payload.user_id); // Store the token
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;

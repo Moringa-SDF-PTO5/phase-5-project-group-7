@@ -1,24 +1,35 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../services/api';
 
-export const fetchClubs = createAsyncThunk('clubs/fetchClubs', async () => {
-  const response = await api.get('/clubs');
-  return response.data;
-});
-
-// Define the async thunks for club actions
-export const fetchClubDetail = createAsyncThunk('clubs/fetchClubDetail', async (clubId, { rejectWithValue }) => {
+export const fetchClubs = createAsyncThunk('clubs/fetchClubs', async (_, { rejectWithValue }) => {
     try {
-        const response = await api.get(`/clubs/${clubId}`);
-        return response.data;
+        const response = await api.get('/clubs');
+        return response.data; // Assuming response.data is an array of clubs
     } catch (error) {
         return rejectWithValue(error.response.data);
     }
 });
 
-export const createClub = createAsyncThunk('clubs/createClub', async (clubData) => {
-  const response = await api.post('/clubs', clubData);
-  return response.data; // Ensure the created club data is returned
+// Define the async thunks for club actions
+export const fetchClubDetail = createAsyncThunk(
+    'clubs/fetchClubDetail',
+    async (clubId, { rejectWithValue }) => {
+        try {
+            const response = await api.get(`/clubs/${clubId}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const createClub = createAsyncThunk('clubs/createClub', async (clubData, thunkAPI) => {
+    try {
+        const response = await api.post('/clubs', clubData);
+        return response.data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.response.data);
+    }
 });
 
 export const updateClub = createAsyncThunk('clubs/updateClub', async (updatedClub, { rejectWithValue }) => {

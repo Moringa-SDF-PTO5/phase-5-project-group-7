@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom'; // Changed useHistory to useNavigate
-import { fetchClubs } from '../features/clubs/clubSlice'; // Import the thunk for fetching clubs
-import '../styles/Clubs.css'; // Import CSS for styling
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchClubs } from '../features/clubs/clubSlice';
+import '../styles/Clubs.css';
 
 const Clubs = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Changed useHistory to useNavigate
+    const navigate = useNavigate();
     const clubs = useSelector((state) => state.clubs.clubs);
     const loading = useSelector((state) => state.clubs.loading);
     const error = useSelector((state) => state.clubs.error);
 
     useEffect(() => {
-        async function loadClubs() {
+        const loadClubs = async () => {
             try {
                 await dispatch(fetchClubs()).unwrap();
             } catch (err) {
                 if (err.message === 'Unauthenticated') {
-                    navigate('/login'); // Changed history.push to navigate
+                    navigate('/login');
                 }
             }
-        }
+        };
         loadClubs();
     }, [dispatch, navigate]);
 
@@ -34,11 +34,15 @@ const Clubs = () => {
                 <Link to="/create-club">Create a New Club</Link>
             </div>
             <ul className="clubs-list">
-                {clubs.map((club) => (
-                    <li key={club.id}>
-                        <Link to={`/club/${club.id}`}>{club.name}</Link>
-                    </li>
-                ))}
+                {clubs.length > 0 ? (
+                    clubs.map((club) => (
+                        <li key={club.id}>
+                            <Link to={`/clubs/${club.id}`}>{club.name}</Link>
+                        </li>
+                    ))
+                ) : (
+                    <li>No clubs available</li>
+                )}
             </ul>
         </div>
     );

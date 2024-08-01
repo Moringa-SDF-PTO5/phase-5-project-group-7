@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { fetchClubDetail } from './clubSlice';
 import PostList from '../posts/PostList';
 import CreatePost from '../posts/CreatePost';
-import '../../styles/ClubDetail.css'; // Import CSS for styling
+import '../../styles/ClubDetail.css';
 
 const ClubDetail = () => {
     const { id } = useParams();
@@ -20,7 +20,7 @@ const ClubDetail = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    if (!club) return <div>No Club Found</div>;
+    if (!club || !club.created_by) return <div>No Club Found</div>;
 
     return (
         <div className="club-detail">
@@ -30,9 +30,13 @@ const ClubDetail = () => {
             <p>Created by: {club.created_by.username}</p>
             <h3>Members</h3>
             <ul>
-                {club.members.map((member) => (
-                    <li key={member.id}>{member.username}</li>
-                ))}
+                {club.members.length > 0 ? (
+                    club.members.map((member) => (
+                        <li key={member.id}>{member.username}</li>
+                    ))
+                ) : (
+                    <li>No members</li>
+                )}
             </ul>
             <h3>Posts</h3>
             <PostList clubId={club.id} />

@@ -1,6 +1,8 @@
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+
+
 from app import db
 
 class User(db.Model):
@@ -24,8 +26,12 @@ class User(db.Model):
     followed_users = db.relationship('User', 
                                       secondary='follows', 
                                       primaryjoin='User.id == Follows.follower_id', 
-                                      secondaryjoin='User.id == Follows.followed_id', 
-                                      backref='followers')
+                                      secondaryjoin='User.id == Follows.followed_id' 
+                                      )
+    followed_clubs = db.relationship('Club', 
+                                      secondary='club_followers', 
+                                      primaryjoin='User.id == ClubFollowers.user_id', 
+                                      secondaryjoin='Club.id == ClubFollowers.club_id')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -70,12 +76,20 @@ class Club(db.Model):
     members = db.relationship('User', secondary='club_members')
     posts = db.relationship('Post', back_populates='club', lazy='dynamic')
     ratings = db.relationship('Rating', back_populates='club', lazy='dynamic')
+    followers = db.relationship('User', secondary='club_followers')
 
 class ClubMembers(db.Model):
     __tablename__ = 'club_members'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
+    
+class ClubFollowers(db.Model):
+    __tablename__ = 'club_followers'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    club_id = db.Column(db.Integer, db.ForeignKey('clubs.id'), nullable=False)
+
 
 class Post(db.Model):
     __tablename__ = 'posts'

@@ -19,6 +19,7 @@ const Login = () => {
         try {
             const result = await dispatch(login({ username, password })).unwrap();
             sessionStorage.setItem('token', result.token); // Store token in sessionStorage
+            sessionStorage.setItem('user_id', result.user_id); // Store user_id in sessionStorage
             navigate('/clubs'); // Navigate to a protected route after successful login
         } catch (err) {
             setError('Failed to log in. Please check your credentials and try again.');
@@ -26,11 +27,11 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-    }; 
-    
+    };
+
     return (
         <div className="login-container">
-            <h2>Login👌</h2>
+            <h2>Login</h2>
             <p>Welcome back! Please enter your credentials to access your clubs.</p>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">

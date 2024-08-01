@@ -1,8 +1,8 @@
-"""Initial migration
+"""empty message
 
 Revision ID: cb97a8b36124
 Revises: 
-Create Date: 2024-07-29 21:50:55.858659
+Create Date: 2024-08-01 14:11:09.666922
 
 """
 from alembic import op

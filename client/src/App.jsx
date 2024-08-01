@@ -14,6 +14,7 @@ import Register from './features/auth/Register';
 import CreateClub from './features/clubs/CreateClub';
 import CreatePost from './features/posts/CreatePost';
 import Clubs from './pages/Clubs';
+import ClubList from './features/clubs/ClubList';
 import ProtectedRoute from './components/PrivateRoute';
 
 function App() {
@@ -24,14 +25,15 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/discover" element={<Discover />} />
-                    <Route path="/clubs" element={<ProtectedRoute><Clubs /></ProtectedRoute>} />
-                    <Route path="/club/:id" element={<ProtectedRoute><ClubDetail /></ProtectedRoute>} />
+                    <Route path="/clubs" element={<Clubs />} />
+                    <Route path="/clubs/:id" element={<ProtectedRoute><ClubDetail /></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     <Route path="/search" element={<Search />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/create-club" element={<ProtectedRoute><CreateClub /></ProtectedRoute>} />
                     <Route path="/create-post" element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
+                    <Route path="/clubs" element={<ClubList />} />
                 </Routes>
                 <Footer />
             </Router>
