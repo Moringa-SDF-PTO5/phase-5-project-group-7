@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:10000',
+    baseURL: 'https://phase-5-project-group-7.onrender.com',
 });
 
 // Add an interceptor to include the token in the headers if needed
