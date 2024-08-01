@@ -3,7 +3,7 @@ To create a README.md file for your main repository that serves as a template st
 ### README.md Template
 
 ```markdown
-# Project Name
+Movies/Series Club
 
 Brief description of your project.
 
@@ -22,12 +22,26 @@ Explain briefly what your project does, its purpose, and any key features.
 
 ## Features
 
-- List of key features or functionalities.
+- User authentication (login, registration)
+- Create and manage clubs
+- Create and view posts within clubs
+- View and update user profile
+- Responsive design with basic styling
+
+## Prerequisites
+
+- Node.js (>= 14.x.x)
+- npm or yarn
+
 
 ## Installation
 
-Describe how to install and set up your project. Include any prerequisites and step-by-step instructions.
+ **Clone the repository:**
 
+   ```bash
+   git clone <repository-url>
+   cd frontend
+   npm install
 ### Backend (Flask API)
 
 - Instructions for setting up the Flask backend, including using pipenv.
@@ -44,12 +58,90 @@ pipenv shell
 
 ```bash
 cd client
-npm install
+npm install( NPM versions 18.0 and up )
+npm run dev to give you URL to local host
 ```
+### Backend (Flask with Postgres)
+
+cd server
+pipenv install && pipenvshell
+pipenv run python run.app to start server with URL link
 
 ## Usage
 
-Provide examples or instructions on how to use your project. Include any configuration settings or environment variables that need to be set.
+--frontend
+-Register a New User:
+Use the provided UI form to register a new user.
+-Login:
+Use the login form to authenticate users.
+-Create a Club:
+Navigate to the "Create Club" page and fill out the form to create a new club. Upon successful creation, you will be redirected to the newly created club's detail page.
+-View Club Details:
+Navigate to the "Clubs" page and click on a club name to view its details, including members and posts.
+-Create a Post:
+On a club detail page, use the "Create Post" form to add new posts to the club.
+
+--backend
+Register a New User:
+
+http
+
+POST /register
+Content-Type: application/json
+
+{
+  "username": "exampleUser",
+  "password": "examplePassword"
+}
+
+Login:
+
+http
+
+POST /login
+Content-Type: application/json
+
+{
+  "username": "exampleUser",
+  "password": "examplePassword"
+}
+
+Create a Club:
+
+http
+
+POST /clubs
+Authorization: Bearer <your-auth-token>
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "name": "New Club",
+  "description": "Description of the new club",
+  "genre": "Drama"
+}
+
+Get Club Details:
+
+http
+
+GET /clubs/1
+Authorization: Bearer <your-auth-token>
+
+Create a Post:
+
+http
+
+POST /clubs/1/posts
+Authorization: Bearer <your-auth-token>
+Content-Type: application/json
+
+{
+  "title": "New Post",
+  "content": "Content of the new post"
+}
+
+
 
 ### Running Tests
 
