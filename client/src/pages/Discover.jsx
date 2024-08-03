@@ -1,4 +1,3 @@
-// pages/Discover.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { IMAGE_URL_W300 } from '../services/constants';
@@ -16,14 +15,12 @@ const Discover = () => {
             try {
                 const movieResponse = await axios.get('https://phase-5-project-group-7.onrender.com/discover/movies');
                 const tvShowResponse = await axios.get('https://phase-5-project-group-7.onrender.com/discover/tv');
-
                 setMovies(movieResponse.data.results || []);
                 setTvShows(tvShowResponse.data.results || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
-
         fetchData();
     }, []);
 
@@ -63,7 +60,6 @@ const Discover = () => {
                             />
                         ))}
                     </div>
-
                     <h2>Discover TV Shows</h2>
                     <div className="tvshows-list">
                         {Array.isArray(tvShows) && tvShows.map(show => (

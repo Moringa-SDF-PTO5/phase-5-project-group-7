@@ -1,11 +1,28 @@
 import React from 'react';
-import "../styles/Home.css";
+import { Link } from 'react-router-dom';
+import '../styles/Home.css'; // Adjust the path as needed
 
 const Home = () => {
     return (
-        <div>
+        <div className="home">
             <h1>Welcome to the Home Page</h1>
             <p>Explore clubs, movies, and TV shows.</p>
+            <div className="discover-section">
+                <div>
+                    <Link to="/discover/movies">Discover Movies</Link>
+                </div>
+                <div>
+                    <Link to="/tv-shows">Discover TV Shows</Link>
+                </div>
+            </div>
+            <div className="auth-section">
+                <div>
+                    <Link to="/login">Login</Link>
+                </div>
+                <div>
+                    <Link to="/register">Register</Link>
+                </div>
+            </div>
         </div>
     );
 };

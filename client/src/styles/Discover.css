@@ -1,56 +1,50 @@
-.discover-container {
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
+body {
+    background-color: #f0f2f5; /* Light grey background for the entire body */
+    font-family: 'Arial, sans-serif';
 }
 
 .details {
+    background-color: #ffffff;
     padding: 20px;
-    text-align: left;
-    background: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
     margin: 20px auto;
-    max-width: 600px;
+    text-align: center;
 }
 
 .details img {
     max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
     margin-bottom: 20px;
+}
+
+.details button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.details button:hover {
+    background-color: #0056b3;
 }
 
 .movies-list,
 .tvshows-list {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
     margin-top: 20px;
-}
-
-.movies-list .card,
-.tvshows-list .card {
-    flex: 1 0 21%; /* Adjusts the width of the cards */
-    margin: 10px;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.movies-list .card:hover,
-.tvshows-list .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.movies-list .card img,
-.tvshows-list .card img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px 8px 0 0;
 }
