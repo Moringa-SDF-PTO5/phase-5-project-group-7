@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { rateClub } from './clubsSlice'; // Ensure you have this action in your clubsSlice
+import { rateClub } from './clubsSlice';
 import { Box, Rating, Typography, Alert } from '@mui/material';
 
 const RatingComponent = ({ clubId }) => {

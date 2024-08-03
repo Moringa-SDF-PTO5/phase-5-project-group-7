@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: 'https://phase-5-project-group-7.onrender.com',
 });
 
-// Add an interceptor to include the token in the headers if needed
+
 api.interceptors.request.use((config) => {
   const token = sessionStorage.getItem('token');
   if (token) {

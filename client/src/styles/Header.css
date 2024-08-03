@@ -30,32 +30,32 @@ nav a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
-    transition: color 0.3s ease; /* Smooth transition for hover effect */
+    transition: color 0.3s ease;
     font-family: 'Arial', sans-serif;
     font-size: 16px;
 }
 
 nav a:hover {
-    color: #61dafb; /* Change color on hover for better UX */
+    color: #61dafb; 
 }
 
 nav button {
-    background-color: #61dafb; /* Button background color */
-    color: #282c34; /* Button text color */
+    background-color: #61dafb;
+    color: #282c34;
     border: none;
     cursor: pointer;
     padding: 10px 15px;
-    border-radius: 4px; /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
     font-family: 'Arial', sans-serif;
     font-size: 16px;
 }
 
 nav button:hover {
-    background-color: #21a1f1; /* Darker shade on hover */
+    background-color: #21a1f1;
 }
 
-/* Additional styles for mobile responsiveness */
+
 @media (max-width: 600px) {
     nav {
         flex-direction: column;
@@ -63,10 +63,10 @@ nav button:hover {
     }
 
     nav a {
-        margin: 10px 0; /* Spacing for links in vertical layout */
+        margin: 10px 0;
     }
 
     nav button {
-        margin-top: 10px; /* Spacing for button in vertical layout */
+        margin-top: 10px;
     }
 }

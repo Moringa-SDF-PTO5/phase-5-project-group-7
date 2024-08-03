@@ -1,11 +1,16 @@
+
 .club-detail {
     padding: 20px;
     background-color: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
 }
 
 .club-detail h2 {
     color: #333;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 2px solid #ddd;
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -13,6 +18,7 @@
 .club-detail p {
     margin-bottom: 10px;
     color: #555;
+    line-height: 1.5;
 }
 
 .club-detail h3 {
@@ -23,6 +29,7 @@
 .club-detail ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .club-detail ul li {
@@ -31,6 +38,11 @@
     border-radius: 5px;
     margin-bottom: 10px;
     padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.club-detail ul li:hover {
+    background-color: #f0f0f0;
 }
 
 .club-detail .posts-container {

@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function ProfileIcon({ user }) {
-    const defaultAvatar = 'path/to/default/avatar.png'; // Replace with your default avatar path
-
+    const defaultAvatar = 'path/to/default/avatar.png';
     return (
         <Link to="/profile" className="profile-icon">
             <img

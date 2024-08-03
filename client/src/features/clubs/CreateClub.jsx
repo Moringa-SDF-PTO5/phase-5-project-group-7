@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Updated import
+import { useNavigate } from 'react-router-dom';
 import { createClub } from './clubSlice';
+import '../../styles/CreateClub.css';
 
 const CreateClub = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Updated from useHistory
+    const navigate = useNavigate();
     const [clubName, setClubName] = useState('');
     const [description, setDescription] = useState('');
     const [genre, setGenre] = useState('');
@@ -15,8 +16,6 @@ const CreateClub = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = sessionStorage.getItem('token');
-        console.log('Token:', token);
-        console.log('User ID:', userId);
         if (!userId) {
             setError('User not logged in');
             return;
@@ -24,7 +23,7 @@ const CreateClub = () => {
 
         try {
             const resultAction = await dispatch(createClub({ user_id: userId, name: clubName, description, genre })).unwrap();
-            navigate(`/clubs/${resultAction.id}`); // Adjust according to your response
+            navigate(`/clubs/${resultAction.id}`);
         } catch (err) {
             setError('Failed to create club');
             console.error('Create club error:', err);
@@ -32,10 +31,10 @@ const CreateClub = () => {
     };
 
     return (
-        <div>
+        <div className="create-club-container">
             <h2>Create Club</h2>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className="form-group">
                     <label>Club Name:</label>
                     <input
                         type="text"
@@ -44,7 +43,7 @@ const CreateClub = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Description:</label>
                     <textarea
                         value={description}
@@ -52,7 +51,7 @@ const CreateClub = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Genre:</label>
                     <input
                         type="text"

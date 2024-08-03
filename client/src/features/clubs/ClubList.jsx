@@ -34,9 +34,9 @@ const ClubList = () => {
     if (clubs.length === 0) return <div>No Clubs Found</div>;
 
     return (
-        <div>
+        <div className="clubs-container">
             <h2>Clubs</h2>
-            <ul>
+            <ul className="clubs-list">
                 {clubs.map(club => (
                     <li key={club.id}>
                         <Link to={`/clubs/${club.id}`}>{club.name}</Link>

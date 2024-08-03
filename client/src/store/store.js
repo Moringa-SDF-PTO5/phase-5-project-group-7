@@ -6,8 +6,7 @@ import clubReducer from '../features/clubs/clubSlice';
 import postReducer from '../features/posts/postsSlice';
 import ratingReducer from '../features/rates/ratingSlice';
 import notificationReducer from '../features/notifications/notificationSlice';
-import watchlistReducer from '../features/watchlist/watchlistSlice'; // Assuming you have a watchlistSlice
-
+import watchlistReducer from '../features/watchlist/watchlistSlice';
 const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -17,7 +16,7 @@ const store = configureStore({
         posts: postReducer,
         ratings: ratingReducer,
         notifications: notificationReducer,
-        watchlist: watchlistReducer, // Adding watchlist reducer
+        watchlist: watchlistReducer,
     },
 });
 

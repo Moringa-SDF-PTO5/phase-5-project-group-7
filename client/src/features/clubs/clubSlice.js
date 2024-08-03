@@ -4,13 +4,13 @@ import api from '../../services/api';
 export const fetchClubs = createAsyncThunk('clubs/fetchClubs', async (_, { rejectWithValue }) => {
     try {
         const response = await api.get('/clubs');
-        return response.data; // Assuming response.data is an array of clubs
+        return response.data;
     } catch (error) {
         return rejectWithValue(error.response.data);
     }
 });
 
-// Define the async thunks for club actions
+
 export const fetchClubDetail = createAsyncThunk(
     'clubs/fetchClubDetail',
     async (clubId, { rejectWithValue }) => {
@@ -44,7 +44,7 @@ export const updateClub = createAsyncThunk('clubs/updateClub', async (updatedClu
 export const deleteClub = createAsyncThunk('clubs/deleteClub', async (clubId, { rejectWithValue }) => {
     try {
         await api.delete(`/clubs/${clubId}`);
-        return clubId; // Return the id to filter out the deleted club
+        return clubId;
     } catch (error) {
         return rejectWithValue(error.response.data);
     }

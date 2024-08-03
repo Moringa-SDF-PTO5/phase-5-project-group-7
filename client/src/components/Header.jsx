@@ -8,7 +8,7 @@ import '../styles/Header.css'
 const Header = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
-    const isLoggedIn = !!user; // Assuming user is null or an object; adjust based on your state
+    const isLoggedIn = !!user;
 
     const handleLogout = () => {
         dispatch(logout());

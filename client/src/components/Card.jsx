@@ -1,4 +1,4 @@
-// components/Card.jsx
+
 import React, { useState } from 'react';
 import { IMAGE_URL_W300 } from '../services/constants';
 import "../styles/cards.css";
