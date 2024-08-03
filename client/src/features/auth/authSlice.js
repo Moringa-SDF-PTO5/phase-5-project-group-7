@@ -23,6 +23,7 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
     return rejectWithValue(error.response.data);
   }
 });
+
 export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
   try {
     const response = await api.post('/register', userData);
@@ -32,12 +33,12 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
   }
 });
 
-// Define synchronous logout action
+
 export const logout = () => {
   return (dispatch) => {
       sessionStorage.removeItem('token');
-      sessionStorage.removeItem('user_id'); // Clear the token on logout
-      dispatch({ type: 'auth/logout' }); // Optional: dispatch an action to update the store
+      sessionStorage.removeItem('user_id'); 
+      dispatch({ type: 'auth/logout' });
   };
 };
 
@@ -69,7 +70,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         sessionStorage.setItem('token', action.payload.token);
         sessionStorage.setItem('user_id', action.payload.user_id);
-    })
+      })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Failed to log in';
@@ -80,9 +81,7 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        sessionStorage.setItem('token', action.payload.token);
-        sessionStorage.setItem('user_id', action.payload.user_id); // Store the token
+        
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;

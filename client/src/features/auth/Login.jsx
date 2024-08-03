@@ -8,7 +8,7 @@ const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.user);
-    const isLoggedIn = !!user; // Assuming user is null or an object; adjust based on your state
+    const isLoggedIn = !!user; 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,9 +20,9 @@ const Login = () => {
         setError('');
         try {
             const result = await dispatch(login({ username, password })).unwrap();
-            sessionStorage.setItem('token', result.token); // Store token in sessionStorage
-            sessionStorage.setItem('user_id', result.user_id); // Store user_id in sessionStorage
-            navigate('/clubs'); // Navigate to a protected route after successful login
+            sessionStorage.setItem('token', result.token); 
+            sessionStorage.setItem('user_id', result.user_id); 
+            navigate('/clubs'); 
         } catch (err) {
             setError('Failed to log in. Please check your credentials and try again.');
             console.error('Login error:', err);
@@ -33,9 +33,9 @@ const Login = () => {
 
     const handleLogout = () => {
         dispatch(logout());
-        sessionStorage.removeItem('token'); // Remove token from sessionStorage
-        sessionStorage.removeItem('user_id'); // Remove user_id from sessionStorage
-        navigate('/'); // Navigate to home or login page after logout
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user_id');
+        navigate('/');
     };
 
     return (

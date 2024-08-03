@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { register } from './authSlice';
-import '../../styles/Register.css'; // Ensure the path and name are correct
+import '../../styles/Register.css';
 
 const Register = () => {
     const dispatch = useDispatch();
