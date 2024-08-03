@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { login } from './authSlice';
+import { login, logout } from './authSlice';
 import '../../styles/Login.css';
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.user);
+    const isLoggedIn = !!user; // Assuming user is null or an object; adjust based on your state
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -29,34 +31,47 @@ const Login = () => {
         }
     };
 
+    const handleLogout = () => {
+        dispatch(logout());
+        sessionStorage.removeItem('token'); // Remove token from sessionStorage
+        sessionStorage.removeItem('user_id'); // Remove user_id from sessionStorage
+        navigate('/'); // Navigate to home or login page after logout
+    };
+
     return (
         <div className="login-container">
             <h2>Login</h2>
-            <p>Welcome back! Please enter your credentials to access your clubs.</p>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Username:</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                {error && <p className="error">{error}</p>}
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
-            </form>
+            {isLoggedIn ? (
+                <button onClick={handleLogout}>Logout</button>
+            ) : (
+                <>
+                    <p>Welcome back! Please enter your credentials to access your clubs.</p>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Username:</label>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Password:</label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        {error && <p className="error">{error}</p>}
+                        <button type="submit" disabled={loading}>
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
+                    </form>
+                </>
+            )}
         </div>
     );
 };

@@ -1,14 +1,56 @@
-.movies-list, .tvshows-list {
+.discover-container {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+.details {
+    padding: 20px;
+    text-align: left;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.details img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.movies-list,
+.tvshows-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
 }
 
-.movie-item, .tvshow-item {
+.movies-list .card,
+.tvshows-list .card {
+    flex: 1 0 21%; /* Adjusts the width of the cards */
     margin: 10px;
-    width: 200px; /* Adjust as needed */
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
 
-img {
+.movies-list .card:hover,
+.tvshows-list .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.movies-list .card img,
+.tvshows-list .card img {
     width: 100%;
-    border-radius: 5px;
+    height: auto;
+    border-radius: 8px 8px 0 0;
 }

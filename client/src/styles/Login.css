@@ -1,4 +1,4 @@
-.login, .register {
+.login-container {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -8,24 +8,32 @@
     transition: transform 0.3s ease-in-out;
 }
 
-.login:hover, .register:hover {
+.login-container:hover {
     transform: scale(1.05);
 }
 
-/* Header styles */
-.login h2, .register h2 {
+.login-container h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
-/* Form styles */
-.login form, .register form {
+.login-container form {
     display: flex;
     flex-direction: column;
 }
 
-.login form input, .register form input {
+.login-container .form-group {
+    margin-bottom: 10px;
+}
+
+.login-container label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+.login-container input {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
@@ -34,13 +42,12 @@
     transition: border-color 0.3s;
 }
 
-.login form input:focus, .register form input:focus {
+.login-container input:focus {
     border-color: #6a11cb;
     outline: none;
 }
 
-/* Button styles */
-.login form button, .register form button {
+.login-container button {
     padding: 10px;
     background-color: #007BFF;
     color: #fff;
@@ -51,13 +58,13 @@
     transition: background-color 0.3s;
 }
 
-.login form button:hover, .register form button:hover {
+.login-container button:hover {
     background-color: #0056b3;
 }
 
-/* Error message styles */
-.error-message {
+.error {
     color: red;
     margin-bottom: 10px;
     text-align: center;
+    font-size: 14px;
 }

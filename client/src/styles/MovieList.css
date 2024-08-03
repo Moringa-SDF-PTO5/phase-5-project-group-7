@@ -1,36 +1,62 @@
 .movie-list {
     text-align: center;
     padding: 20px;
+    background: #f8f9fa;
 }
 
 .movie-list h2 {
     margin-bottom: 20px;
+    font-size: 2rem;
+    color: #007bff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
 }
 
 .movie-list ul {
     list-style-type: none;
     padding: 0;
+    margin: 0;
 }
 
 .movie-list li {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-.movie-list li:last-child {
-    border-bottom: none;
+.movie-list li:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .movie-list .title {
     font-weight: bold;
+    color: #333;
+    flex: 1;
+}
+
+.movie-list .actions {
+    display: flex;
+    gap: 10px;
 }
 
 .movie-list .actions button {
     background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .movie-list .actions button:hover {
     background-color: #218838;
+    transform: scale(1.05);
 }

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { useNavigate } from 'react-router-dom';
 import { register } from './authSlice';
+import '../../styles/Register.css'; // Ensure the path and name are correct
 
 const Register = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Use useNavigate
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,17 +16,17 @@ const Register = () => {
         e.preventDefault();
         try {
             await dispatch(register({ username, email, password })).unwrap();
-            navigate('/login'); // Use navigate instead of history.push
+            navigate('/login');
         } catch (err) {
             setError('Failed to register. Please check your details and try again.');
         }
     };
 
     return (
-        <div>
+        <div className="register-container">
             <h2>Register</h2>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className="form-group">
                     <label>Username:</label>
                     <input 
                         type="text" 
@@ -34,7 +35,7 @@ const Register = () => {
                         required 
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Email:</label>
                     <input 
                         type="email" 
@@ -43,7 +44,7 @@ const Register = () => {
                         required 
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label>Password:</label>
                     <input 
                         type="password" 
@@ -52,7 +53,7 @@ const Register = () => {
                         required 
                     />
                 </div>
-                {error && <p>{error}</p>}
+                {error && <p className="error">{error}</p>}
                 <button type="submit">Register</button>
             </form>
         </div>

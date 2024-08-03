@@ -1,10 +1,22 @@
 .home {
     text-align: center;
     padding: 20px;
+    background: #f8f9fa; /* Light background color for contrast */
+    color: #333; /* Dark text color for readability */
 }
 
 .home h1 {
     margin-bottom: 20px;
+    font-size: 2.5rem; /* Larger heading */
+    color: #007bff; /* Primary color for heading */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.home p {
+    margin-bottom: 20px;
+    font-size: 1.2rem; /* Slightly larger paragraph text */
+    color: #666; /* Slightly lighter text color */
 }
 
 .home .discover-section {
@@ -19,5 +31,11 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.home .discover-section div:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
 }

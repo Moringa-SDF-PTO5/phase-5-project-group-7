@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { IMAGE_URL_W300 } from '../services/constants';
 import Card from '../components/Card';
+import "../styles/Discover.css";
 
 const Discover = () => {
     const [movies, setMovies] = useState([]);

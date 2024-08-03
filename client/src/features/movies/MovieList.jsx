@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMovies } from './movieSlice';
-import '../../styles/MovieList.css'
+import "../../styles/MovieList.css";
 
 
 const MovieList = () => {
