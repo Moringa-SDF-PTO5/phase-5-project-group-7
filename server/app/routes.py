@@ -1,5 +1,8 @@
 from flask import request, jsonify, session, current_app as app
-from app.models import db, User, Movie, TVShow, Club, Post, Comment, Rating, WatchedMovie, WatchedTvShow, Notification, Follows
+from app.models import (
+    db, User, Club, Post, Comment, Rating, WatchedMovie,
+     WatchedTvShow, Notification, Follows
+)
 from functools import wraps
 from datetime import datetime, timedelta
 from werkzeug.exceptions import BadRequest
@@ -46,7 +49,7 @@ def discover_movies():
         response.raise_for_status()
         data = response.json()
         
-        # Ensure the correct data structure
+        
         movies = {
             "results": [{
                 "id": movie["id"],
@@ -78,7 +81,7 @@ def discover_tv_shows():
         response.raise_for_status()
         data = response.json()
         
-        # Ensure the correct data structure
+        
         tv_shows = {
             "results": [{
                 "id": show["id"],
@@ -149,7 +152,7 @@ def login():
     user = User.query.filter_by(username=data['username']).first()
     if user and user.check_password(data['password']):
         token = jwt.encode({'user_id': user.id, 'exp': datetime.utcnow() + timedelta(hours=24)}, app.config['SECRET_KEY'], algorithm="HS256")
-        session['user_id'] = user.id  # Ensure the session is set here
+        session['user_id'] = user.id
         app.logger.debug(f"User logged in: {user.id}")
         return jsonify({"msg": "Logged in successfully", "token": token, "user_id": user.id}), 200
     return jsonify({"msg": "Invalid username or password"}), 401
@@ -194,7 +197,7 @@ def get_clubs():
     try:
         clubs = Club.query.all()
         response = jsonify([{"id": club.id, "name": club.name, "genre": club.genre} for club in clubs])
-        print(response.data)  # Log the response data for debugging
+        print(response.data)
         return response
     except Exception as e:
         logging.error(f"Error fetching clubs: {e}")
@@ -264,7 +267,8 @@ def join_club(club_id):
 @app.route('/club/<int:club_id>/posts', methods=['GET'])
 def get_club_posts(club_id):
     posts = Post.query.filter_by(club_id=club_id).all()
-    return jsonify([{"id": post.id, "title": post.title, "content": post.content, "user_id": post.user_id} for post in posts]), 200
+    return jsonify([{"id": post.id, "title": post.title, 
+                     "content": post.content, "user_id": post.user_id} for post in posts]), 200
 
 @app.route('/club/<int:club_id>/posts', methods=['POST'])
 # @login_required
@@ -296,7 +300,8 @@ def create_comment(post_id):
 @app.route('/post/<int:post_id>/comments', methods=['GET'])
 def get_post_comments(post_id):
     comments = Comment.query.filter_by(post_id=post_id).all()
-    return jsonify([{"id": comment.id, "content": comment.content, "user_id": comment.user_id} for comment in comments]), 200
+    return jsonify([{"id": comment.id, "content": comment.content, 
+                     "user_id": comment.user_id} for comment in comments]), 200
 
 @app.route('/rate', methods=['POST'])
 # @login_required

@@ -4,7 +4,7 @@ from app.models import User, Club, Post
 
 @pytest.fixture
 def app():
-    app = create_app('testing')  # Ensure you have a testing config
+    app = create_app()  # No argument needed here
     with app.app_context():
         yield app
 
@@ -43,7 +43,7 @@ def test_user_login(client, init_database):
 def test_get_clubs(client, init_database):
     response = client.get('/clubs')
     assert response.status_code == 200
-    assert isinstance(response.json, list)  # Expecting a list of clubs
+    assert isinstance(response.json, list)
 
 def test_create_club(client, init_database):
     client.post('/register', json={
