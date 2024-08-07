@@ -90,14 +90,31 @@ pipenv run python run.app to start server with URL link
 ### Front-end
 - Register a New User:
   Use the provided UI form to register a new user.
+  ![Screenshot 2024-08-07 121149](https://github.com/user-attachments/assets/ba683a46-ca6f-43f1-b26c-da138f65fbea)
+
 - Login:
   Use the login form to authenticate users.
+![Screenshot 2024-08-07 121134](https://github.com/user-attachments/assets/aeda9dd1-2f16-4484-9ccd-90b1e7fa5359)
+
+- Discover movies and series :
+  Find out the trending movies and series and click on any for more information.
+  ![Screenshot 2024-08-07 120822](https://github.com/user-attachments/assets/2e7c5a30-9538-45b4-863b-db18b9b192d6)
+  
+  ![Screenshot 2024-08-07 183044](https://github.com/user-attachments/assets/ebed5c75-1d92-4a65-bf5d-fbf006e912f9)  
+ ![Screenshot 2024-08-07 120923](https://github.com/user-attachments/assets/375baae2-4961-4db2-a20a-28f9d8500527)
+
 - Create a Club:
   Navigate to the "Create Club" page and fill out the form to create a new club. Upon successful creation, you will be redirected to the newly created club's detail page.
+![Screenshot 2024-08-07 182533](https://github.com/user-attachments/assets/f493e622-7e47-4c8f-b624-4f65e8e0d181)
+
 - View Club Details:
   Navigate to the "Clubs" page and click on a club name to view its details, including members and posts.
+  ![Screenshot 2024-08-07 182728](https://github.com/user-attachments/assets/c893f631-9004-49de-82df-b37fa3d5d731)
+
 - Create a Post:
 On a club detail page, use the "Create Post" form to add new posts to the club.
+![Screenshot 2024-08-07 182818](https://github.com/user-attachments/assets/9e9c138f-2acf-4ae1-bc9a-2b4ec437b926)
+
 
 ### Back-end
 Register a New User:
